@@ -1,0 +1,303 @@
+{
+  "all_converted": true,
+  "all_yolo_rows_checked": true,
+  "full_video_frames": 72031,
+  "full_video_visible_records": 15253492,
+  "human_01_02_03_frames": 360,
+  "human_indoor_frames": 180,
+  "human_outdoor_frames": 180,
+  "human_indoor_boxes": 65853,
+  "benchmark_subset_frames": 36,
+  "benchmark_is_subset_of_human": true,
+  "classes": {
+    "indoor": {
+      "0": "bee"
+    },
+    "outdoor": {
+      "0": "bee",
+      "1": "bee_shadow"
+    }
+  },
+  "originals_preserved": true,
+  "server_output": "/data/bee26/yolo_format_20260908/converted",
+  "modelscope_dataset": "poloso/yolo_indoor",
+  "modelscope_version": "versions/v5_yolo_format_20260908",
+  "format_test_result": {
+    "passed": 15,
+    "failed": 0
+  },
+  "datasets": {
+    "outdoor_v2": {
+      "export": {
+        "completed": true,
+        "version": "outdoor_v2",
+        "counts": {
+          "candidates": 778129,
+          "geometry_repairs": 0,
+          "detect_files": 36021,
+          "pose_files": 35972,
+          "frames": 36021
+        },
+        "visible_classes": {
+          "1": 100151,
+          "0": 677978
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/versions/v2_id_smoothing_sam21_cotracker_20260907/annotations_outdoor.tar.zst"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 36021,
+          "candidates": 778129,
+          "files": 71993
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "indoor_v4_B-5-3": {
+      "export": {
+        "completed": true,
+        "version": "indoor_v4_B-5-3",
+        "counts": {
+          "detect_files": 9013,
+          "frames": 9013,
+          "candidates": 4634461,
+          "geometry_repairs": 327,
+          "pose_files": 9011,
+          "hidden": 1884133,
+          "hidden_detect_files": 9007
+        },
+        "visible_classes": {
+          "0": 4634461
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/versions/v4_indoor_appearance_iomin20_20260908/annotations/B-5-3_annotations.tar.gz"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 9013,
+          "files": 27031,
+          "candidates": 4634461,
+          "hidden": 1884133
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "human_01_02_03": {
+      "export": {
+        "completed": true,
+        "version": "human_01_02_03",
+        "counts": {
+          "confirmed": 70053,
+          "geometry_repairs": 75,
+          "detect_files": 360,
+          "pose_files": 360,
+          "frames": 360
+        },
+        "visible_classes": {
+          "0": 69399,
+          "1": 654
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/datasets/human_annotations_01_03_20260905/human_annotations_01_03_20260905_v3.zip",
+          "/data/bee26/datasets/bee_e_y_unified_20260901/sources/annotator_deliveries/标注员_02"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 360,
+          "confirmed": 70053,
+          "files": 720
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "indoor_v4_B-5-1": {
+      "export": {
+        "completed": true,
+        "version": "indoor_v4_B-5-1",
+        "counts": {
+          "detect_files": 8996,
+          "frames": 8996,
+          "candidates": 4488401,
+          "geometry_repairs": 287,
+          "pose_files": 8994,
+          "hidden": 763283,
+          "hidden_detect_files": 8990
+        },
+        "visible_classes": {
+          "0": 4488401
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/versions/v4_indoor_appearance_iomin20_20260908/annotations/B-5-1_annotations.tar.gz"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 8996,
+          "files": 26980,
+          "candidates": 4488401,
+          "hidden": 763283
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "benchmark_original": {
+      "export": {
+        "completed": true,
+        "version": "benchmark_original",
+        "counts": {
+          "confirmed": 13154,
+          "geometry_repairs": 15,
+          "detect_files": 36,
+          "pose_files": 36,
+          "frames": 36
+        },
+        "visible_classes": {
+          "0": 13154
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/label_data_flywheel_integration_20260908/repo/legacy/indoor/benchmark"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 36,
+          "confirmed": 13154,
+          "files": 72
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "indoor_v4_B-5-4": {
+      "export": {
+        "completed": true,
+        "version": "indoor_v4_B-5-4",
+        "counts": {
+          "detect_files": 9005,
+          "frames": 9005,
+          "candidates": 3357306,
+          "geometry_repairs": 146,
+          "pose_files": 9001,
+          "hidden": 157456,
+          "hidden_detect_files": 8990
+        },
+        "visible_classes": {
+          "0": 3357306
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/versions/v4_indoor_appearance_iomin20_20260908/annotations/B-5-4_annotations.tar.gz"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 9005,
+          "files": 26996,
+          "candidates": 3357306,
+          "hidden": 157456
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "outdoor_pose_original": {
+      "export": {
+        "completed": true,
+        "version": "outdoor_pose_original",
+        "counts": {
+          "candidates": 778129,
+          "geometry_repairs": 0,
+          "detect_files": 36021,
+          "pose_files": 35972,
+          "frames": 36021
+        },
+        "visible_classes": {
+          "1": 100151,
+          "0": 677978
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/outdoor/annotations/flywheel_outdoor_pose_labels_postprocessed_20260903.zip"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 36021,
+          "candidates": 778129,
+          "files": 71993
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    },
+    "indoor_v4_B-5-2": {
+      "export": {
+        "completed": true,
+        "version": "indoor_v4_B-5-2",
+        "counts": {
+          "detect_files": 8996,
+          "frames": 8996,
+          "candidates": 1995195,
+          "geometry_repairs": 0,
+          "pose_files": 8986,
+          "hidden": 102489,
+          "hidden_detect_files": 8958
+        },
+        "visible_classes": {
+          "0": 1995195
+        },
+        "originals_preserved": true,
+        "original_source_paths": [
+          "/data/bee26/yolo_format_20260908/original_downloads/versions/v4_indoor_appearance_iomin20_20260908/annotations/B-5-2_annotations.tar.gz"
+        ],
+        "ids": "frame_ids.jsonl.gz",
+        "image_copy": false,
+        "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+      },
+      "validation": {
+        "passed": true,
+        "counts": {
+          "frames": 8996,
+          "files": 26940,
+          "candidates": 1995195,
+          "hidden": 102489
+        },
+        "all_label_rows_and_id_mapping_checked": true
+      }
+    }
+  }
+}

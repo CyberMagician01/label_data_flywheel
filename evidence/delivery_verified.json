@@ -1,0 +1,70 @@
+{
+  "completed": true,
+  "videos": {
+    "B-5-1": {
+      "frames": 8996,
+      "detection_rows": 4488401,
+      "pose_rows": 4488401,
+      "tracking_rows": 4488401,
+      "hidden_rows": 763283
+    },
+    "B-5-2": {
+      "frames": 8996,
+      "detection_rows": 1995195,
+      "pose_rows": 1995195,
+      "tracking_rows": 1995195,
+      "hidden_rows": 102489
+    },
+    "B-5-3": {
+      "frames": 9013,
+      "detection_rows": 4634461,
+      "pose_rows": 4634461,
+      "tracking_rows": 4634461,
+      "hidden_rows": 1884133
+    },
+    "B-5-4": {
+      "frames": 9005,
+      "detection_rows": 3357306,
+      "pose_rows": 3357306,
+      "tracking_rows": 3357306,
+      "hidden_rows": 157456
+    },
+    "A-5-1": {
+      "without_track_id": 24949,
+      "tracking_rows": 133392,
+      "frames": 8997,
+      "detection_rows": 158341,
+      "pose_rows": 158341
+    },
+    "A-5-2": {
+      "tracking_rows": 184626,
+      "frames": 9014,
+      "detection_rows": 196909,
+      "pose_rows": 196909,
+      "without_track_id": 12283
+    },
+    "A-5-3": {
+      "frames": 9002,
+      "detection_rows": 76561,
+      "pose_rows": 76561,
+      "tracking_rows": 76232,
+      "without_track_id": 329
+    },
+    "A-5-4": {
+      "without_track_id": 62590,
+      "tracking_rows": 283728,
+      "frames": 9008,
+      "detection_rows": 346318,
+      "pose_rows": 346318
+    }
+  },
+  "total_frames": 72031,
+  "total_detection_rows": 15253492,
+  "total_tracking_rows": 15153341,
+  "originals_preserved": true,
+  "docx_pending": false,
+  "docx_pages_verified": 2,
+  "contains_images": false,
+  "mot_format": "10 columns, 1-based frame and top-left, original IDs",
+  "split_status": "full automatic annotations unassigned; source human splits kept separately"
+}

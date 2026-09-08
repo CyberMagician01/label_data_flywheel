@@ -54,6 +54,18 @@ def main(argv=None):
     validation = subs.add_parser("validate-annotations")
     validation.add_argument("--input", required=True)
     validation.add_argument("--output")
+    yolo = subs.add_parser(
+        "export-yolo", help="保留原标注，另存 YOLO 框、姿态和 ID 旁文件"
+    )
+    yolo.add_argument("--config", required=True)
+    yolo.add_argument("--output", required=True)
+    yolo_check = subs.add_parser("validate-yolo")
+    yolo_check.add_argument("--input", required=True)
+    delivery = subs.add_parser(
+        "export-delivery", help="整理检测、姿态和 MOT 三个平行标注目录"
+    )
+    delivery.add_argument("--config", required=True)
+    delivery.add_argument("--output", required=True)
     behavior_train = subs.add_parser("train-behavior")
     behavior_train.add_argument("--input", required=True)
     behavior_train.add_argument("--output", required=True)
@@ -132,6 +144,29 @@ def main(argv=None):
                 ensure_ascii=False,
             )
         )
+        return
+    if args.command == "export-yolo":
+        from .yolo_package import export_yolo
+
+        print(
+            json.dumps(
+                export_yolo(read_json(args.config), args.output), ensure_ascii=False
+            )
+        )
+        return
+    if args.command == "export-delivery":
+        from .delivery_package import export_delivery
+
+        print(
+            json.dumps(
+                export_delivery(read_json(args.config), args.output), ensure_ascii=False
+            )
+        )
+        return
+    if args.command == "validate-yolo":
+        from .yolo_package import validate_yolo
+
+        print(json.dumps(validate_yolo(args.input), ensure_ascii=False))
         return
     if args.command == "validate-annotations":
         from .annotation_package import validate_annotations

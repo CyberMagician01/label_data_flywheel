@@ -15,6 +15,7 @@ training = ["torch>=2.1", "PyYAML>=6"]
 test = ["pytest>=7"]
 colony = ["scipy>=1.10", "matplotlib>=3.7"]
 evaluation = ["trackeval @ git+https://github.com/JonathonLuiten/TrackEval.git@12c8791b303e0a0b50f753af204249e622d0281a", "scipy>=1.10"]
+annotations = ["zstandard>=0.22"]
 
 [project.scripts]
 bee-flywheel = "label_data_flywheel.cli:main"

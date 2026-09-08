@@ -27,6 +27,8 @@ flowchart LR
 | 运行标注整理与复核候选生成 | `bee-flywheel round --config ... --output ...` |
 | 数量、热图、近邻网络与纯视频变化复核 | `bee-flywheel colony --config configs/colony.example.json --output 新目录` |
 | 导出、校验标准标注包 | `bee-flywheel export-annotations` / `validate-annotations` |
+| 转换为 YOLO，保留原标注与 ID | `bee-flywheel export-yolo` / `validate-yolo` |
+| 整理检测、姿态和 MOT 三个交付目录 | `bee-flywheel export-delivery --config configs/delivery.example.json --output 05_数据标注成果` |
 | 当前最优室内全量 ID 方案 | [legacy/indoor/run_appearance20.py](legacy/indoor/run_appearance20.py) |
 | 室外原版 SAM2.1 与几何吸附 | [legacy/outdoor](legacy/outdoor) |
 | 关键点、YOLO、密度推理 | [tools/infer_models.py](tools/infer_models.py) |
@@ -57,6 +59,28 @@ bee-flywheel round --config configs/round.example.json --output /data/bee26/flyw
 ```
 
 默认输出统一标注、质量证据、ErrorCube、行为观测与复核队列。采样计划和训练快照由相应配置启用。`review_decisions` 可接入上一轮的人工决定；`candidate_evidence` 和 `expert_calibration` 可接入完成校准的专家结果。`pose_sources` 把已有同帧关键点与 SAM 轨迹对齐。
+
+### YOLO 标注副本
+
+```bash
+python -m pip install -e '.[annotations]'
+bee-flywheel export-yolo --config configs/yolo.example.json --output /data/bee26/yolo_new_version
+bee-flywheel validate-yolo --input /data/bee26/yolo_new_version
+```
+
+每张源图对应一个 TXT。`detect/labels` 每行是 `class cx cy w h`；`pose/labels` 再接头、腹尾两个点的 `x y v`，共 11 列。坐标按源图宽高归一化；`v` 是 0/1/2 可见性编码，原始关键点置信度另存。检测与姿态标签独立，不把 ID 追加进标准 YOLO 行。
+
+`frame_ids.jsonl.gz` 每行对应一个源帧，其中 `label_files` 指向 TXT，`rows` 中的 `line` 从 1 开始，与 TXT 行号一一对应，保留 `track_id`、来源 ID、置信度和插值来源。ID 沿用原版，并以视频、标注组为作用域。`audit_hidden` 保存隐藏框的 YOLO 副本，不放入训练 labels。原始文件只读，已存在的输出目录拒绝覆盖。人工与机器标签分别在 `confirmed`、`candidates` 中；室外已有 `bee_shadow` 类独立保留。
+
+输出只包含标注。使用图像时，将原图放到对应的 `detect/images` 或 `pose/images` 下，与 `labels` 保持相同相对目录和文件名。`label_schema.yaml` 描述类别和关键点；已有划分写入 `splits`。未划分全集保留 `unassigned`，不会自动变成训练集；仅有检测框而没有任何关键点的帧，不列入姿态训练清单。
+
+### 交付目录
+
+`export-delivery` 将已转换的全量机器标注整理为 `annotations/<视频>/`（YOLO 检测）、`annotations_pose/<视频>/`（YOLO 两点姿态）和 `annotations_tracking/<视频>/tracks.txt`（MOT 十列）。MOT 的帧号和左上角坐标从 1 起算；源图文件名和 ID 数值保留，metadata 记录 TXT 与 MOT 的行号对应关系。隐藏框存入独立 audit 目录；无 ID 的影子保留检测和姿态，不生成虚构轨迹。人工标注副本独立保留。
+
+完整包同时提供 `splits`、`frame_manifest.jsonl`、抽帧脚本和可选的 DOCX 说明。全量自动标注未指定划分时，train/val 为空、源帧全部保留在 unassigned。配套图像始终存放在标注包外。已完成的八段全量格式转换、15 项相关测试及逐行检查见 [转换证据](evidence/yolo_conversion_verified.json)；三目录及 MOT 实际数量见 [交付检查](evidence/delivery_verified.json)。
+
+YOLO 独立副本发布到私有 ModelScope 的 `versions/v5_yolo_format_20260908/`。其中 `annotations/` 保留室内、室外、原室外姿态及人工标注的独立归档；`delivery/05_数据标注成果.tar.gz` 是按上述三个平行目录整理的全量八视频交付包。原 v2/v4 标注与已冻结 benchmark 保持原样，GitHub 另存 [benchmark YOLO 副本](legacy/indoor/benchmark_yolo)。
 
 ```bash
 # 先验证具体模型命令；去掉 --dry-run 即实际执行。

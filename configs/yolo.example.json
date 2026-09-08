@@ -1,0 +1,14 @@
+{
+  "version": "new_yolo_copy",
+  "names": {"0": "bee", "1": "bee_shadow"},
+  "inputs": [
+    {
+      "path": "/data/bee26/source_annotations/A-5-1/frames",
+      "video": "A-5-1",
+      "source": "prediction",
+      "frame_index_base": 0,
+      "split": "unassigned",
+      "member_pattern": "frame_\\d+\\.json(?:\\.gz)?"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "counts": {
+    "frames": 36,
+    "confirmed": 13154,
+    "files": 72
+  },
+  "all_label_rows_and_id_mapping_checked": true
+}

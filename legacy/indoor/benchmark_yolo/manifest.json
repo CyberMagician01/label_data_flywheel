@@ -1,0 +1,21 @@
+{
+  "completed": true,
+  "version": "benchmark_original",
+  "counts": {
+    "confirmed": 13154,
+    "geometry_repairs": 15,
+    "detect_files": 36,
+    "pose_files": 36,
+    "frames": 36
+  },
+  "visible_classes": {
+    "0": 13154
+  },
+  "originals_preserved": true,
+  "original_source_paths": [
+    "/data/bee26/label_data_flywheel_integration_20260908/repo/legacy/indoor/benchmark"
+  ],
+  "ids": "frame_ids.jsonl",
+  "image_copy": false,
+  "format": "Ultralytics YOLO detect (5 columns) / pose (11 columns)"
+}

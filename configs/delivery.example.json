@@ -1,0 +1,12 @@
+{
+  "inputs": [
+    "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-1",
+    "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-2",
+    "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-3",
+    "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-4",
+    "/data/bee26/yolo_format_20260908/converted/outdoor_v2"
+  ],
+  "workers": 4,
+  "human_split_source": "/data/bee26/yolo_format_20260908/converted/human_01_02_03/detect/splits",
+  "description_docx": "/data/bee26/yolo_format_20260908/数据标注说明.docx"
+}

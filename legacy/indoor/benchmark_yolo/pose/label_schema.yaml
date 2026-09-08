@@ -1,0 +1,8 @@
+names:
+  0: bee
+  1: bee_shadow
+kpt_shape: [2, 3]
+flip_idx: [0, 1]
+kpt_names:
+  0: [head, abdomen_tip]
+  1: [head, abdomen_tip]
