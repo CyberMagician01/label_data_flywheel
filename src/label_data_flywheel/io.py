@@ -41,6 +41,8 @@ def normalize(
     frame, *, video, domain, group="unknown", split="unassigned", source="prediction"
 ):
     f = copy.deepcopy(frame)
+    # 已标准化记录的域与其 sample_id 一致，不被调用参数静默改写。
+    domain = f.get("domain", domain)
     if domain not in ("IR_in", "RGB_out"):
         raise ValueError("domain必须为IR_in或RGB_out")
     f.update(

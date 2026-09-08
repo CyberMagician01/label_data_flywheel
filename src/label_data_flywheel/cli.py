@@ -38,6 +38,14 @@ def main(argv=None):
     cal = subs.add_parser("calibrate-experts")
     cal.add_argument("--input", required=True)
     cal.add_argument("--output", required=True)
+    annotations = subs.add_parser(
+        "export-annotations", help="只导出数据飞轮标注包，不生成参赛推理程序"
+    )
+    annotations.add_argument("--config", required=True)
+    annotations.add_argument("--output", required=True)
+    validation = subs.add_parser("validate-annotations")
+    validation.add_argument("--input", required=True)
+    validation.add_argument("--output")
     behavior_train = subs.add_parser("train-behavior")
     behavior_train.add_argument("--input", required=True)
     behavior_train.add_argument("--output", required=True)
@@ -68,6 +76,31 @@ def main(argv=None):
                 run_round(read_json(args.config), args.output), ensure_ascii=False
             )
         )
+        return
+    if args.command == "export-annotations":
+        from .annotation_package import export_annotations
+
+        result = export_annotations(read_json(args.config), args.output)
+        print(
+            json.dumps(
+                {
+                    "version": result["version"],
+                    "counts": result["counts"],
+                    "pending": result["pending"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return
+    if args.command == "validate-annotations":
+        from .annotation_package import validate_annotations
+
+        result = validate_annotations(args.input)
+        if args.output:
+            write_json(args.output, result)
+        print(json.dumps(result, ensure_ascii=False))
+        if not result["passed"]:
+            raise SystemExit(1)
         return
     if args.command == "calibrate-experts":
         from .experts import fit_experts

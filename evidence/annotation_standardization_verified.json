@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "errors": [],
+  "pending": [
+    "外部数据/预训练来源声明尚未核实完整，未将空清单解释为未使用外部数据",
+    "unassigned 帧未自动加入训练或验证",
+    "train/val 尚未同时提供；保留原有 calibration/test 语义，不自动重划分",
+    "部分源视频帧编号基准尚未确认；抽帧时须明确提供0或1"
+  ],
+  "frames": 34,
+  "counts": {
+    "confirmed": 348,
+    "geometry_repairs": 1,
+    "frames": 34,
+    "candidates": 8319,
+    "audit_only": 3760
+  },
+  "scope": "data_flywheel_annotation_standardization_only",
+  "formal_competition_submission": false,
+  "pycocotools_loaded": {
+    "annotations/A-5-4/manual_reference/confirmed.coco.json": {
+      "images": 1,
+      "annotations": 20
+    },
+    "annotations/B-5-4/manual_reference/confirmed.coco.json": {
+      "images": 1,
+      "annotations": 328
+    },
+    "annotations/B-5-3/unknown/candidates.coco.json": {
+      "images": 16,
+      "annotations": 7915
+    },
+    "annotations/A-5-1/unknown/candidates.coco.json": {
+      "images": 16,
+      "annotations": 404
+    }
+  },
+  "real_data": true,
+  "output_path": "/data/bee26/label_data_flywheel_integration_20260908/annotation_standardized_sample_20260908",
+  "source_frames_preserved": true
+}

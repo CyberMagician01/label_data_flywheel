@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "files_checked": 36,
+  "newline_repairs": 30,
+  "cause": "Windows checkout CRLF versus source LF",
+  "label_values_unchanged": true,
+  "frozen_manifest_hashes_unchanged": true,
+  "repairs": [
+    {
+      "annotation": "test/标注员_01/B-5-1_frame_000615.json",
+      "before_sha256": "42726e7359ac2bc4cd19add80a73e3b975661225f2c21995f8088a93ec3eae4f",
+      "restored_sha256": "dacbdb1cb9a1f1081b6fbdc30c41245730e10e0759659607ed87a4d1b99ec04a"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-1_frame_000640.json",
+      "before_sha256": "2d92e0dde80cf35136913721725ec20e67c05192ffabf596e07655fde422fa02",
+      "restored_sha256": "9cec07bfae9c1041bd0b918f9f4e576aaf257e165a6804fc14aedd9230b0b48f"
+    },
+    {
+      "annotation": "test/标注员_01/B-5-1_frame_000665.json",
+      "before_sha256": "d2eac8d8ef8313cc400b4469ce45d160df2ce5eb4a2c6623274f4788182392f9",
+      "restored_sha256": "03772792df85cd8678f6833cd9e1d71497ceb16c305de1c713f06e4907778599"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-1_frame_004470.json",
+      "before_sha256": "7cebfc599f52daacf42b93784066783935920c9cb8ad91516083759bc500a13d",
+      "restored_sha256": "cf2af5c8ea3ae026266bb5e44b0e53600a69b2e6ceb1943e98be37827d715be2"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-1_frame_004495.json",
+      "before_sha256": "ef437bce2325d986765abe65c8622c78c62bfcd3ac81b6595f82e88f2ae4d327",
+      "restored_sha256": "1adcfc00882a80543dccb645b56d3ee34d81bcdb2f513a42e11c71740e1f5f3c"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-1_frame_004520.json",
+      "before_sha256": "b1c5743e9400a6b9577f31948210d996bcfabe9559a8e2ea5cde3ff65f474994",
+      "restored_sha256": "6f8f712b6ff754e61ff56a453d5b0ea8e391a384dec59b58f450dd902b0d693e"
+    },
+    {
+      "annotation": "test/标注员_03/B-5-1_frame_008325.json",
+      "before_sha256": "be13cc868fe8fb42cb93502b6337857fc21ba781c25c79e14b6694942ef41400",
+      "restored_sha256": "43a49b5e20382d22c77cfaa7f7706cda843ab82406ad03666b617f544323401f"
+    },
+    {
+      "annotation": "calibration/标注员_03/B-5-1_frame_008350.json",
+      "before_sha256": "3ddbd82599aab99b1c3a1f02ae30cae71543366d978e8709d468406de3f93ac9",
+      "restored_sha256": "14ec3e2ba5235b8c642a9d7d6feeb852b095f9af100cf0c28d6827ca39073781"
+    },
+    {
+      "annotation": "test/标注员_03/B-5-1_frame_008375.json",
+      "before_sha256": "ae57e08d20dac69dc7a3c684ebfcadf37125a6228afe92792b8b46d27e383382",
+      "restored_sha256": "7c76923572c30482a79c387955d03e06cdd01ebd1795f2c41f3132d9b07c4591"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-2_frame_000615.json",
+      "before_sha256": "42557bed90bf9a17b84bfe3d8a29b426a0a02473fc39f002736ca817d5cdadb4",
+      "restored_sha256": "da98e75d7a3727e01491cd8062716256fb1b565b608617545eff98ed13435266"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-2_frame_000640.json",
+      "before_sha256": "429ac26d5ae680467f508f282f38fa7f8cc9fde9a73ca91ce8cf4c02a239dd42",
+      "restored_sha256": "e914382f8ea1e5958e92aa0c50db93d4b07ca07ac2db1ace6e7cf7479ef6dc24"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-2_frame_000665.json",
+      "before_sha256": "ed5cd5203cfb5c8790e06c178a41f5e4f7a99cb6b6bb3babb2d9aee4c9e6c540",
+      "restored_sha256": "7518914f276a614c97ff0409e5965db079cfa791c75ac7188aa86f140ffb4ac2"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-2_frame_008325.json",
+      "before_sha256": "67e2945b466a24181e55fbc456e311deb992304668b0e89cf56ed3c7ba40b383",
+      "restored_sha256": "ccb38d766666e45bcf300e1039fe3cacac64ecbe75c188ce25fb1a3dbce24701"
+    },
+    {
+      "annotation": "test/标注员_01/B-5-2_frame_008350.json",
+      "before_sha256": "514be728910e4bf5759fcc3793080e76d27a6c5f77c66afa98f96b7b29dd3d5c",
+      "restored_sha256": "59419d64ce5ccf76ac84fa11e0b08554677dbc9513525d18c68d9fa89687b6d9"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-2_frame_008375.json",
+      "before_sha256": "17071584be839d10ff582e9cfee98fe4b0f3aa1a4902e56c8a6d7c14e1012ad3",
+      "restored_sha256": "c983a9341ca19531530c382f9ca113194ff2d4093e747531255b93be741e4548"
+    },
+    {
+      "annotation": "test/标注员_03/B-5-3_frame_000615.json",
+      "before_sha256": "142ccfccfdf9a87564f6ab9962b07da3547d89c32d2ad143026b1ca6de0b5878",
+      "restored_sha256": "d948d11e48db0b5ec486cd6bd411153fe424f48e34328ec3ad76535677d5688d"
+    },
+    {
+      "annotation": "calibration/标注员_03/B-5-3_frame_000640.json",
+      "before_sha256": "b96fb7239e6550689e2ae48aa979b6a97f9e47e604b2492d15fa28e669fc4ab1",
+      "restored_sha256": "9656c9803dcc7a58225f9aab7a8cb77b5ab65be15a964baca91bc46627b2f918"
+    },
+    {
+      "annotation": "test/标注员_03/B-5-3_frame_000665.json",
+      "before_sha256": "c5f2129d4e63bc545da8f9c764d9feb74ea4c66833d953035eae89a30d3b4d83",
+      "restored_sha256": "a48ead0240377c0b417ba03e2c2791d851cc5ea46d7f1bca5348f335a7261cbd"
+    },
+    {
+      "annotation": "test/标注员_01/B-5-3_frame_004475.json",
+      "before_sha256": "18833b2d684620f572b18a638d8151e3945ce8c34fc3e45dd5381439fc8a2984",
+      "restored_sha256": "92ab0573da6850bf29301fa21b5b595027e1fba293904d2718cf64c1fe675a5f"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-3_frame_004500.json",
+      "before_sha256": "73840bd04a7f864b5355e2653386ec771f1facf1f305a387410f5591abfee9ab",
+      "restored_sha256": "f780875c85a2fe6533fa13976120b9238dbb017fdd3792640180d39485dad74b"
+    },
+    {
+      "annotation": "test/标注员_01/B-5-3_frame_004525.json",
+      "before_sha256": "3e0082264ea168ce2a211ccfc6ec5f95e1f065d09775b19a4fabec92a22084f9",
+      "restored_sha256": "239f58134a1fbe103934d327514d8a3cd427df5850b6c522f6c8cfbb14d394d8"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-3_frame_008340.json",
+      "before_sha256": "b5a0e2aeb8963a5053587fcaf0507a4219a31bcfb18019cc6457497685f515d5",
+      "restored_sha256": "fde33eabfec7203b0f6f982dda4cac66c21f51fdc2c87b9fec8db4ff66a556bc"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-3_frame_008365.json",
+      "before_sha256": "b6e07187c1835d2089a80b2daccb5dd0df9458d9c5dd1db4587f18f5ec126b57",
+      "restored_sha256": "a2eb6b35893b484d0f96603c3cea28970dba38f7c2750cb226ed522466c5c560"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-3_frame_008390.json",
+      "before_sha256": "fdcd65c31e7236760462bf2ffa4c1b76cc7a4c14a456a60c7dfb2790903d2082",
+      "restored_sha256": "91fa5b548dff7e8be113c007b71eea0fec3b80667c68473b4e1c60296f5d6e86"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-4_frame_000615.json",
+      "before_sha256": "7985167a3b6bb5cc1c4ead037e2c01eda8a618875267c0236ea2c9c64bae0433",
+      "restored_sha256": "2345df510aea311b7a511e890f39b3943e4fd326f98c0664e18ff0b11a8cbbc0"
+    },
+    {
+      "annotation": "test/标注员_01/B-5-4_frame_000640.json",
+      "before_sha256": "4d5e09a35065148eb53a23b9dd9d3a104e29895ab6dc6cbe3ce18c4bcb5cf1c7",
+      "restored_sha256": "525b5c1a722a0881b6e661e194702279da9e77d0f6db3f9395d9e825e46242a1"
+    },
+    {
+      "annotation": "calibration/标注员_01/B-5-4_frame_000665.json",
+      "before_sha256": "32e05c9b059a2b9e467ac592621cfbd0759a40765cd7eb04c16931932121ed84",
+      "restored_sha256": "66aac740dd8b8dc650e313bf4c8f126eeee7034d43547e52661fbf787c22b41a"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-4_frame_004470.json",
+      "before_sha256": "6ea64096a9eaaaa1a54cc8abe2cbeceb4d5e92a93d8bd9d7bf56417847413bca",
+      "restored_sha256": "18b1279673d7436514170165bf6c0f96d4720d959f5b13a3ccedef4db33ef35f"
+    },
+    {
+      "annotation": "test/标注员_02/B-5-4_frame_004495.json",
+      "before_sha256": "934b727914b670a0e87977bce3693ff5765290b3e9c649edbb3534f9757050bf",
+      "restored_sha256": "de6b9dc81800f0dacbaa6fcb7e2542f896328dd38675872c0b8c69d814ca0356"
+    },
+    {
+      "annotation": "calibration/标注员_02/B-5-4_frame_004520.json",
+      "before_sha256": "06fd03bb75365e1a7b55cb2fe4b448a1b6449421055f23f32248d265f87c51b0",
+      "restored_sha256": "8861bd5bc4bc238de3d4dfb534caaf4c868af80a9e2061998ffa155967fb4e76"
+    }
+  ]
+}

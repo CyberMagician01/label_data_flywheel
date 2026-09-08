@@ -1,0 +1,9 @@
+{
+  "version": "replace_with_new_data_version",
+  "inputs": [
+    {"path": "/data/bee26/round/annotations.jsonl.gz", "video": "B-5-1", "domain": "IR_in", "group": "01", "source": "prediction", "split": "unassigned", "version": "original_selected_version", "frame_index_base": null, "keypoint_encoding": "confidence"}
+  ],
+  "external_data": [],
+  "review_audits": [],
+  "external_data_declaration_complete": false
+}

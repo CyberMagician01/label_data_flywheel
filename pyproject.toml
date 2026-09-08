@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "label-data-flywheel"
-version = "0.1.0"
+version = "0.2.0"
 description = "Dual-domain bee annotation, quality evidence, review and data feedback"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.23,<3", "Pillow>=9"]
+dependencies = ["numpy>=1.23,<3", "Pillow>=9", "ijson>=3.2"]
 
 [project.optional-dependencies]
 vision = ["opencv-python>=4.8", "scipy>=1.10", "requests>=2.28"]
@@ -20,6 +20,9 @@ bee-flywheel = "label_data_flywheel.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+label_data_flywheel = ["assets/*.py", "assets/*.md"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

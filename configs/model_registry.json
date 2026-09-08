@@ -19,7 +19,7 @@
     }
   },
   "integration_candidate": {
-    "version": "flywheel_0.1.0",
+    "version": "flywheel_0.2.0",
     "evaluation_status": "runtime_validation_only",
     "full_training_complete": false,
     "promoted_over_selected": false,

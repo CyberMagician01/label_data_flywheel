@@ -2,6 +2,8 @@
 
 **室内红外与室外 RGB 蜜蜂标注的数据飞轮。** 保留经过筛选的检测、姿态、密度与追踪方案，补齐质量校准、统计采样、行为证据、人工复核和训练数据回流。
 
+**范围只限数据飞轮模块。** 赛事文件中的标注格式、划分、复核、来源和抽帧复现要求在此落实；四 EXE、ONNX、Windows 离线打包及完整参赛材料由其他模块负责，不作为飞轮完成标准。见 [范围与数据规范](docs/数据飞轮范围与数据规范.md)。
+
 原始标注、算法预测、人工确认结果分别保存。每轮生成新快照；没有相同评测协议下的改进证据，就不替换已有最优版本。
 
 ```mermaid
@@ -23,6 +25,7 @@ flowchart LR
 | 需要做什么 | 入口 |
 |---|---|
 | 完整运行一轮飞轮 | `bee-flywheel round --config ... --output ...` |
+| 导出、校验标准标注包 | `bee-flywheel export-annotations` / `validate-annotations` |
 | 当前最优室内全量 ID 方案 | [legacy/indoor/run_appearance20.py](legacy/indoor/run_appearance20.py) |
 | 室外原版 SAM2.1 与几何吸附 | [legacy/outdoor](legacy/outdoor) |
 | 关键点、YOLO、密度推理 | [tools/infer_models.py](tools/infer_models.py) |
@@ -82,7 +85,7 @@ bee-flywheel evaluate --gt /data/bee26/gt.jsonl --input /data/bee26/pred.jsonl \
 
 验证结果集中在 [evidence](evidence)。已执行：真实 RGB/IR 关键点与密度推理、Y 路线 checkpoint 推理、3090 上 E 网络双域前向/反向及优化器更新、4090 上室外 A-5-1 连续 16 帧原版 SAM 推理、32 帧双域飞轮处理，以及真实 348 个标注框的 E schema 数据加载。
 
-核心模块 26 项测试、E 路线 153 项测试通过。具体证据见 [verification_summary.json](evidence/verification_summary.json)；保留版本见 [model_registry.json](configs/model_registry.json)。
+核心模块 34 项测试、E 路线 153 项测试通过。具体证据见 [verification_summary.json](evidence/verification_summary.json)；保留版本见 [model_registry.json](configs/model_registry.json)。数据标准化另用 34 个真实源帧验证，见 [annotation_standardization_verified.json](evidence/annotation_standardization_verified.json)。
 
 这些证明实现能运行。新增整个飞轮尚未完成完整训练和独立留出集的收益实验，因此不宣称整体 mAP、IDF1 或行为识别率已提高。历史最优版本保持原样；行为输出默认是候选，人工确认后才能进入监督学习。
 

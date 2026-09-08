@@ -1,7 +1,10 @@
 {
-  "release": "flywheel_0.1.0",
+  "release": "flywheel_0.2.0",
   "date": "2026-09-08",
-  "core_tests": {"passed": 26, "failed": 0, "evidence": "core_tests_release_official.log"},
+  "core_tests": {"passed": 34, "failed": 0, "evidence": "annotation_standardization_tests.log"},
+  "data_flywheel_contract": "annotation_standardization_verified.json",
+  "benchmark_bytes": "benchmark_byte_consistency.json",
+  "existing_model_runtime_evidence_from": "flywheel_0.1.0",
   "e_route_tests": {"passed": 153, "failed": 0, "warnings": 2, "evidence": "e_tests_final.log"},
   "runtime_checks": {
     "e_gpu": "e_gpu.json",

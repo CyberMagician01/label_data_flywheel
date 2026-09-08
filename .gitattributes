@@ -1,0 +1,2 @@
+# benchmark 清单使用原始 LF 字节的 SHA-256；Windows 检出也保持一致。
+legacy/indoor/benchmark/** text eol=lf
