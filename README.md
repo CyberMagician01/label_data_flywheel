@@ -25,6 +25,7 @@ flowchart LR
 | 需要做什么 | 入口 |
 |---|---|
 | 完整运行一轮飞轮 | `bee-flywheel round --config ... --output ...` |
+| 群体通量、热图、时间网络与蜂学解释 | `bee-flywheel colony --config configs/colony.example.json --output 新目录` |
 | 导出、校验标准标注包 | `bee-flywheel export-annotations` / `validate-annotations` |
 | 当前最优室内全量 ID 方案 | [legacy/indoor/run_appearance20.py](legacy/indoor/run_appearance20.py) |
 | 室外原版 SAM2.1 与几何吸附 | [legacy/outdoor](legacy/outdoor) |
@@ -35,6 +36,7 @@ flowchart LR
 | ViTPose / CountAnything / CountGD++ 历史实验 | [legacy/server_experiments](legacy/server_experiments) |
 | 文档功能对应实现 | [docs/功能与验证.md](docs/功能与验证.md) |
 | 学术方案与实验边界 | [docs/Hive_Q2K_Dual_方法.md](docs/Hive_Q2K_Dual_方法.md) |
+| 群体行为与蜂学一手文献、实测及使用 | [docs/群体行为与蜂学研究.md](docs/群体行为与蜂学研究.md) |
 
 ## 安装和使用
 

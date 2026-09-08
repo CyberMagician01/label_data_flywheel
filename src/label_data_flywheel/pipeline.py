@@ -173,6 +173,62 @@ def run_round(config, output):
         for r in quality
     ]
     queue = prioritize(review_rows, config.get("review_budget", 50))
+    if config.get("colony", {}).get("enabled"):
+        from .colony import analyze_colony
+        from .apiculture import interpret_colony
+
+        colony_config = config["colony"]
+        colony_report = analyze_colony(
+            sorted(
+                frames, key=lambda f: (f["domain"], f["video"], f["group"], f["frame"])
+            ),
+            colony_config.get("analysis", {}),
+        )
+        colony_report["apiculture"] = interpret_colony(
+            colony_report, colony_config.get("context_records", [])
+        )
+        if colony_config.get("review_decisions"):
+            from .apiculture import review_colony
+
+            colony_report = review_colony(
+                colony_report,
+                colony_config["review_decisions"],
+                colony_config["reviewer"],
+            )
+            write_json(
+                out / "confirmed_group_windows.json",
+                colony_report["confirmed_group_windows"],
+            )
+            write_json(
+                out / "colony_review_audit.json", colony_report["colony_review_audit"]
+            )
+            for event in colony_report["confirmed_group_windows"]:
+                for f in frames:
+                    if (f["domain"], f["video"], f["group"]) == (
+                        event["domain"],
+                        event["video"],
+                        event["group"],
+                    ) and event["source_frame_range"][0] <= f["frame"] <= event[
+                        "source_frame_range"
+                    ][1]:
+                        f.setdefault("confirmed_colony_events", []).append(
+                            {
+                                "event_id": event["event_id"],
+                                "human_label": event["human_label"],
+                                "reviewer": event["reviewer"],
+                            }
+                        )
+        colony_queue = [
+            row
+            for row in colony_report["apiculture"]["review_queue"]
+            if row["status"] == "unconfirmed"
+        ]
+        write_json(out / "colony.json", colony_report)
+        write_json(out / "colony_review_queue.json", colony_queue)
+        budget = config.get("review_budget", 50)
+        reserved = min(len(colony_queue), max(0, budget // 4))
+        if reserved:
+            queue = queue[: budget - reserved] + colony_queue[:reserved]
     graph = (
         read_json(config["knowledge_graph"])
         if config.get("knowledge_graph")
@@ -180,6 +236,9 @@ def run_round(config, output):
     )
     if config.get("knowledge_reviews"):
         graph = update_graph(graph, read_json(config["knowledge_reviews"]))
+    if config.get("colony", {}).get("enabled"):
+        graph["literature_cards"] = colony_report["apiculture"]["literature"]["cards"]
+        graph["colony_evidence_path"] = "colony.json"
     policy = meta_policy(cube, len(queue))
     sampling = None
     train_records = [frame_record(f, q_lookup) for f in frames if f["split"] == "train"]

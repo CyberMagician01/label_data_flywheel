@@ -1,0 +1,151 @@
+{
+  "date": "2026-09-08",
+  "core_tests": {
+    "passed": 49,
+    "server": "3090"
+  },
+  "real_clips": [
+    {
+      "video": "B-5-3",
+      "fps": 30.0,
+      "source_frame_range": [
+        1800,
+        7199
+      ],
+      "frames": 5400,
+      "windows": 18,
+      "replay_statistics_equal": true,
+      "analysis_elapsed_seconds": 184.08733385801315,
+      "mean_observed_count": 414.2807407407407,
+      "mean_interpolations": 103.74185185185185,
+      "unique_track_ids_not_bee_population": 5596,
+      "source_receipts": [
+        {
+          "input": {
+            "source_frame_range": [
+              1800,
+              7199
+            ],
+            "group": "all_prediction",
+            "split": "unassigned",
+            "source": "prediction",
+            "video": "B-5-3",
+            "domain": "IR_in",
+            "path": "/root/bee_tracking_pilot_20260907/full_20pct_20260907/final/frames/B-5-3"
+          },
+          "selected_frames": 5400,
+          "sha256": "455bcd677e9ed3eb394492e86e78924b6c46b63e07696d8d910ad3bcda465c00",
+          "hash_definition": "有序文件名、NUL和文件字节的串联"
+        }
+      ],
+      "analysis_implementation_sha256": {
+        "colony.py": "27c6ed89ec2ba0775784aff71ea8ec1f3f9b85d5c712b4c0f90769c93cf194ec",
+        "apiculture.py": "8586efbd1835316c92efc68ea78998bec2f36a81b1a4eaf9538e60d1e1014380",
+        "colony_runner.py": "3c2940a394b7c6295142099dec7a31557af76f09d5cadedfb49d57749d284fbd",
+        "colony_report.py": "fdb518eb0906de7e62db8abc9c8557348a19f2ce314fd4e7396ff2b30193f6d6",
+        "tracking.py": "3e9ca1821a41f1fff5424361a19b5870265789eef9743e3e070ec8a0fef4680a",
+        "io.py": "56591e8759a69a90895bfac3dc10b625eae95627ca0a71ff70d5979b65100538"
+      },
+      "interpretation_render_sha256": {
+        "apiculture.py": "a84aa8a53bf4bd2e9e01612040426fddaccbbaf9437362ae607813d587178afe",
+        "colony_report.py": "a932f006c49c90a60c49ee9ed05e2d24d2da9e3553726c2b9cad46939d8d486e"
+      },
+      "min_frame_coverage": 0.9999999999999976,
+      "motion_observable_range": [
+        0.7876880383098973,
+        0.82742300516867
+      ],
+      "max_density_conservation_error": 8.732604328542948e-08,
+      "gate_status": "unconfigured",
+      "reference_crossings": 0,
+      "review_windows": 0,
+      "biological_statuses": [
+        "insufficient_evidence"
+      ],
+      "private_server_results": "/root/autodl-tmp/label_data_flywheel_integration_20260908/colony_work/B-5-3_180s_final",
+      "artifact_sha256": {
+        "colony.json": "d42cf378b1b628c691d7efcec188f843f1a30f0673fc835175df5a73dcc81d80",
+        "resolved_config.json": "183505f31b55791336f39e59070a1fc7ff7087919d1ac506b21c9755eef9dbbb",
+        "review_queue.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "scope_0_overview.png": "d4eff06cf5bf05a0869e59b29716dfb316128ab55b6d2eba820efb104303aaaf",
+        "scope_0_density_windows.png": "ced541389d6fd6859c26d9077b6fbfe78841d58ccb6ae8f6e179d4fb9244c8d0",
+        "scope_0_spatial_overlay.png": "795d7f5e6508e9aba7571d9a6eced633224049d370f59d8ba1dd0e7cc71b557e",
+        "index.html": "c6fcc275660ac90bf2d0c4639696a3f25a338e133179eace94538dd218913b6b",
+        "render_manifest.json": "e927ffbd18d09ce92e8d19db4b1ae8e107cece71cec02fd9658578057ba36e0b"
+      }
+    },
+    {
+      "video": "A-5-1",
+      "fps": 30.0,
+      "source_frame_range": [
+        1800,
+        7199
+      ],
+      "frames": 5400,
+      "windows": 18,
+      "replay_statistics_equal": true,
+      "analysis_elapsed_seconds": 49.057908276095986,
+      "mean_observed_count": 17.17833333333333,
+      "mean_interpolations": 0.0,
+      "unique_track_ids_not_bee_population": 7597,
+      "source_receipts": [
+        {
+          "input": {
+            "source_frame_range": [
+              1800,
+              7199
+            ],
+            "group": "all_prediction",
+            "split": "unassigned",
+            "source": "prediction",
+            "video": "A-5-1",
+            "domain": "RGB_out",
+            "path": "/root/autodl-tmp/flywheel_outdoor_pose_20260903/outputs_postprocessed_geometry_dedup_tuned_d020_c060_kp005/A-5-1/frames",
+            "tracking_mode": "analysis_baseline",
+            "analysis_retention_frames": 15
+          },
+          "selected_frames": 5400,
+          "sha256": "bed56a3c9a9a3191f9a3cbe1a903c2b3b2b5c0605ba9d591ef37a9cd8004fa54",
+          "hash_definition": "有序文件名、NUL和文件字节的串联"
+        }
+      ],
+      "analysis_implementation_sha256": {
+        "colony.py": "27c6ed89ec2ba0775784aff71ea8ec1f3f9b85d5c712b4c0f90769c93cf194ec",
+        "apiculture.py": "8586efbd1835316c92efc68ea78998bec2f36a81b1a4eaf9538e60d1e1014380",
+        "colony_runner.py": "3c2940a394b7c6295142099dec7a31557af76f09d5cadedfb49d57749d284fbd",
+        "colony_report.py": "fdb518eb0906de7e62db8abc9c8557348a19f2ce314fd4e7396ff2b30193f6d6",
+        "tracking.py": "3e9ca1821a41f1fff5424361a19b5870265789eef9743e3e070ec8a0fef4680a",
+        "io.py": "56591e8759a69a90895bfac3dc10b625eae95627ca0a71ff70d5979b65100538"
+      },
+      "interpretation_render_sha256": {
+        "apiculture.py": "a84aa8a53bf4bd2e9e01612040426fddaccbbaf9437362ae607813d587178afe",
+        "colony_report.py": "a932f006c49c90a60c49ee9ed05e2d24d2da9e3553726c2b9cad46939d8d486e"
+      },
+      "min_frame_coverage": 0.9999999999999976,
+      "motion_observable_range": [
+        0.3421145064980681,
+        0.5047899778924098
+      ],
+      "max_density_conservation_error": 7.24461024503853e-09,
+      "gate_status": "reference_line_only",
+      "reference_crossings": 12,
+      "review_windows": 1,
+      "biological_statuses": [
+        "insufficient_evidence"
+      ],
+      "private_server_results": "/root/autodl-tmp/label_data_flywheel_integration_20260908/colony_work/A-5-1_180s_final",
+      "artifact_sha256": {
+        "colony.json": "df59969c6f9a02d251f22512dabee80e10b84498b40292fe5c1c4e20e0c0afeb",
+        "resolved_config.json": "27c33f86438bb2572d20ffeb6e1cfbd6698b51dfd2d259837c6c51703574dc0d",
+        "review_queue.json": "a055043a6660b19729c1479e81289f2ccd45da9394117adabdcedeb6c2aa8f25",
+        "scope_0_overview.png": "d411e79de34d302fe25603b7f09d39c43ef1adc1e9466f5a1666860e15d2aeff",
+        "scope_0_density_windows.png": "d674ae384fb6b26fe808ca69a09ff9feb06c18c63c1ee40b4bcb57feca2b67a6",
+        "scope_0_spatial_overlay.png": "4ac3a4bf0037423ce609ebf90b1ded4e6f70610e1b7270de95cae406c009ec2b",
+        "index.html": "0bd3512ba9a6fd90e2703e66125ec282e7dfee04d5f876724fd796f3ede78963",
+        "render_manifest.json": "e927ffbd18d09ce92e8d19db4b1ae8e107cece71cec02fd9658578057ba36e0b"
+      }
+    }
+  ],
+  "private_frames_published_to_github": false,
+  "human_colony_reviews": 0
+}

@@ -1,0 +1,22 @@
+{
+  "inputs": [
+    {"path": "/data/bee26/your_annotations/frames/B-5-3", "video": "B-5-3", "domain": "IR_in", "group": "all_prediction", "source_frame_range": [1800, 7199], "source": "prediction", "split": "unassigned"}
+  ],
+  "analysis": {
+    "window_seconds": 10,
+    "grid_size": [64, 36],
+    "kde_sigma_cells": 1.2,
+    "contact_body_lengths": 1.5,
+    "contact_min_seconds": 0.3,
+    "motion_lag_seconds": 0.3,
+    "max_gap_seconds": 0.15,
+    "active_speed_bl_s": 0.2,
+    "max_speed_bl_s": 20,
+    "baseline_windows": 6,
+    "change_mad_z": 4,
+    "min_window_coverage": 0.9
+  },
+  "context_records": [],
+  "font_path": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+  "render": true
+}

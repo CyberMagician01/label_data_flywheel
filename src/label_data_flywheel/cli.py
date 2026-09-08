@@ -38,6 +38,14 @@ def main(argv=None):
     cal = subs.add_parser("calibrate-experts")
     cal.add_argument("--input", required=True)
     cal.add_argument("--output", required=True)
+    colony = subs.add_parser("colony", help="群体时序、空间网络与有来源的蜂学复核建议")
+    colony.add_argument("--config", required=True)
+    colony.add_argument("--output", required=True)
+    colony_review = subs.add_parser(
+        "review-colony", help="具名复核群体事件，生成独立群体监督快照"
+    )
+    for name in ("input", "decisions", "reviewer", "output"):
+        colony_review.add_argument("--" + name, required=True)
     annotations = subs.add_parser(
         "export-annotations", help="只导出数据飞轮标注包，不生成参赛推理程序"
     )
@@ -74,6 +82,39 @@ def main(argv=None):
         print(
             json.dumps(
                 run_round(read_json(args.config), args.output), ensure_ascii=False
+            )
+        )
+        return
+    if args.command == "colony":
+        from .colony_runner import run_colony
+
+        print(
+            json.dumps(
+                run_colony(read_json(args.config), args.output), ensure_ascii=False
+            )
+        )
+        return
+    if args.command == "review-colony":
+        from .apiculture import review_colony
+
+        out = Path(args.output)
+        if out.exists():
+            raise FileExistsError("复核输出已存在，请使用新版本目录")
+        report = review_colony(
+            read_json(args.input), read_json(args.decisions), args.reviewer
+        )
+        write_json(out / "colony.json", report)
+        write_json(out / "review_audit.json", report["colony_review_audit"])
+        write_json(
+            out / "confirmed_group_windows.json", report["confirmed_group_windows"]
+        )
+        print(
+            json.dumps(
+                {
+                    "confirmed_windows": len(report["confirmed_group_windows"]),
+                    "output": str(out),
+                },
+                ensure_ascii=False,
             )
         )
         return

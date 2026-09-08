@@ -137,6 +137,7 @@ def analyze(frames, config=None):
                             "hive_id": f["hive_id"],
                             "domain": domain,
                             "video": video,
+                            "group": f["group"],
                         }
                     )
             row = {
@@ -250,6 +251,7 @@ def analyze(frames, config=None):
                     {
                         "domain": domain,
                         "video": video,
+                        "group": f["group"],
                         "frame": f["frame"],
                         "involved_tracks": [a["track_id"], b["track_id"]],
                         "interaction_state": interaction,
@@ -304,6 +306,7 @@ def analyze(frames, config=None):
                 "video": video,
                 "frame": f["frame"],
                 "raw_count": raw,
+                "group": f["group"],
                 "calibrated_count": calibrated,
                 "density": raw / (f["image_size"][0] * f["image_size"][1]),
                 "density_units": "detections/pixel²",

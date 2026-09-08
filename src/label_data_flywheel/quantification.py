@@ -122,10 +122,12 @@ def enrich(report, frames, config=None):
             evidence_confidence=weight,
             knowledge_source="directed_interaction",
         )
-        by_frame[(edge["domain"], edge["video"], edge["frame"])].append(edge)
+        by_frame[(edge["domain"], edge["video"], edge["group"], edge["frame"])].append(
+            edge
+        )
     for row in report["group_windows"]:
         degree = Counter()
-        for edge in by_frame[(row["domain"], row["video"], row["frame"])]:
+        for edge in by_frame[(row["domain"], row["video"], row["group"], row["frame"])]:
             for tid in edge["involved_tracks"]:
                 degree[str(tid)] += edge["weight"]
         row["graph_statistics"]["weighted_degree"] = dict(degree)
