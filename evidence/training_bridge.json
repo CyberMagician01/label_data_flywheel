@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "real_images": 2,
+  "loaded_targets": [
+    {
+      "image_size": [
+        1920,
+        1080
+      ],
+      "boxes": 20,
+      "pose_mask": 20,
+      "domain_id": 0,
+      "scene_id": 1
+    },
+    {
+      "image_size": [
+        1920,
+        1080
+      ],
+      "boxes": 328,
+      "pose_mask": 328,
+      "domain_id": 1,
+      "scene_id": 0
+    }
+  ],
+  "summary": {
+    "frames": 2,
+    "visible_boxes": 348,
+    "hidden_boxes": 0,
+    "original_observation_boxes_unchanged": 348,
+    "quality_layers": [
+      "L1",
+      "L2"
+    ],
+    "quality_is_consistency_evidence_not_gt_accuracy": true,
+    "events_are_candidates": true,
+    "review_candidates": 10,
+    "source_fingerprints": [
+      {
+        "path": "/data/bee26/label_data_flywheel_integration_20260908/real_smoke/A_full_gt.jsonl",
+        "sha256": "bf4b90e78480ab367d7c47d0a4f0abfd8657644bc67e8102ba9c8052e1321d8f",
+        "selected_frames": 1
+      },
+      {
+        "path": "/data/bee26/label_data_flywheel_integration_20260908/real_smoke/B_full_gt.jsonl",
+        "sha256": "6478b0d782ca9b530a9ddc225766a253fd615780f140d4785104fd814ee71c3b",
+        "selected_frames": 1
+      }
+    ],
+    "training_snapshot": {
+      "schema_version": 2,
+      "splits": {
+        "calibration": {
+          "path": "/data/bee26/label_data_flywheel_integration_20260908/real_round_reference/training_snapshot/calibration.coco.json",
+          "sha256": "2515e72dae9256aeb36dd9d85b2ca33055a067144826f1dd94b6e32933d79fc8",
+          "images": 2,
+          "instances": 348
+        }
+      },
+      "hard_labels": "human_or_human_confirmed",
+      "pseudo_labels": "train_only",
+      "ignore_regions": "zero_background_loss",
+      "requires_training_input_gate": true
+    },
+    "sampling_gate": null,
+    "output_sha256": "ce1d1402f7eb7c90cb21d30bbcb745cfebeccba6dc4628ba7ba4b174fb1872c7"
+  },
+  "used_for_optimization": false,
+  "split": "calibration"
+}

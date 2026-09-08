@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "frames": 16,
+  "source_video": "/root/autodl-tmp/flywheel_outdoor_pose_20260903/inputs/videos/A-5-1.mp4",
+  "source_frame_range": [
+    6000,
+    6015
+  ],
+  "fps": 30.0,
+  "elapsed_seconds": 13.459063053131104,
+  "method": "unmodified_upstream_sam21_then_snapping",
+  "accuracy_measurement": false
+}

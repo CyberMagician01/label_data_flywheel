@@ -1,0 +1,20 @@
+__include__: ['e_pa_dual_scene_bee24_o3652coco_1280.yml']
+
+output_dir: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_curriculum_vnbeetracking_1280_seed2026
+epochs: 8
+inline_eval_freq: 1
+
+bee_e_initialization:
+  reinitialize_output_heads: []
+
+train_dataloader:
+  dataset:
+    img_folder: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/external_public_prepared_20260903/vnbeetracking
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/vn_train_schema_v2.json
+    expected_ann_sha256: 9827cf4d1b7ca1a501990aea26c438bf1848254456c56f73dae93e4bc9bd7f34
+
+val_dataloader:
+  dataset:
+    img_folder: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/external_public_prepared_20260903/vnbeetracking
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/vn_val_monitor256_seed2026_schema_v2.json
+    expected_ann_sha256: 44363dd698c5e82e4e7e5db0e4182c68455b7354aeb90df54e3a55e0f89d420c

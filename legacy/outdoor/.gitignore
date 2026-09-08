@@ -1,0 +1,23 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Checkpoint weights & large model files
+checkpoints/*.pt
+checkpoints/*.pth
+*.pt
+*.pth
+
+# Temporary processing files
+temp_scratch/
+temp_*
+
+# Demonstration Outputs
+demo_outputs/*.mp4
+demo_outputs/*.json
+
+# IDE and OS files
+.DS_Store
+.vscode/
+.idea/

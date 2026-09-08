@@ -1,0 +1,20 @@
+{
+  "started": 1788804473.5961,
+  "models": [
+    {
+      "scene": "A",
+      "model": "vitpose",
+      "exit_code": 0,
+      "seconds": 8.573976516723633,
+      "outputs": 8
+    },
+    {
+      "scene": "B",
+      "model": "vitpose",
+      "exit_code": 0,
+      "seconds": 6.801706314086914,
+      "outputs": 8
+    }
+  ],
+  "all_passed": true
+}

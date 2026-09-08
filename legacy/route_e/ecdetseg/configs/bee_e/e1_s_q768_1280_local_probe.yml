@@ -1,0 +1,17 @@
+__include__: [
+  'e1_s_q768_1280_local.yml',
+]
+
+output_dir: H:/揭榜挂帅/复现UDMT/work_dirs/beeposetrack_e_local_20260828/e1_s_q768_1280_probe
+epochs: 1
+checkpoint_freq: 1
+print_freq: 1
+grad_accum_steps: 1
+
+train_dataloader:
+  dataset:
+    ann_file: H:/揭榜挂帅/复现UDMT/data/bee_e_route_20260827/annotations/train_13_smoke.json
+
+val_dataloader:
+  dataset:
+    ann_file: H:/揭榜挂帅/复现UDMT/data/bee_e_route_20260827/annotations/val_13_smoke.json

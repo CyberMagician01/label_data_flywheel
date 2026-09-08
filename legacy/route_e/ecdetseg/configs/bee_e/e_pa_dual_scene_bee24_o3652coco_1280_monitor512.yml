@@ -1,0 +1,11 @@
+__include__: ['e_pa_dual_scene_bee24_o3652coco_1280.yml']
+
+# Deterministic stratified monitor subset. Full BEE24 validation remains a
+# separate stage-transition and early-stop gate.
+inline_eval: true
+inline_eval_freq: 1
+
+val_dataloader:
+  dataset:
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/public_preadaptation_v1/bee24_test_monitor512_seed2026_schema_v2.json
+    expected_ann_sha256: 77e8027f498e1b057aad39852b96f8d48c15bb44c646f310c6307e5b763f1c4a

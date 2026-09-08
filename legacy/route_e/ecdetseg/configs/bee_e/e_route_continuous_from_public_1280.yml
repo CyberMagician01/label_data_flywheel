@@ -1,0 +1,21 @@
+__include__: ['e_route_continuous_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_route_continuous_from_public_1280_seed2026
+inline_eval: true
+external_eval: {enabled: false}
+
+bee_e_initialization:
+  source: public_bee_preadaptation
+  selected_scale: M
+  selection_evidence: /data/bee26/beeposetrack_e_route_v5_unified_20260901/evidence/official_ecdet_m_coco_selection.json
+  selection_evidence_sha256: ed849b66fd2b38fc2d3c273b36c3e982bebe6712be05faa543f26036039845dd
+  checkpoint: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_p0b_public_pose_1280_seed2026/checkpoint0007.pth
+  sha256: da62dca541a11c4e93e378b5cb5cc802b366d3aaf7d1e0c4c069b3a63745482f
+  reinitialize_output_heads: []
+  public_preadaptation_evidence: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/evidence/public_preadaptation_selection.json
+  public_preadaptation_evidence_sha256: bbf7e61ccbded97fbd94bf9bfd78eeef30de2c866b279dda7b53a2c24c2624b6
+
+
+bee_e_design_evidence:
+  path: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/evidence/route_design_preregistration_strict_v8_autodl_ddp2.json
+  sha256: 3c0ea73a756058fc3d8cf6a0481db15620c708293d203fac544d5930134bdb44

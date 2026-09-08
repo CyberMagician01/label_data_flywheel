@@ -1,0 +1,20 @@
+__include__: ['e_pa_dual_scene_bee24_o3652coco_1280.yml']
+
+output_dir: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_curriculum_mendeley_detection_1280_seed2026
+epochs: 8
+inline_eval_freq: 1
+
+bee_e_initialization:
+  reinitialize_output_heads: []
+
+train_dataloader:
+  dataset:
+    img_folder: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/external_public_prepared_20260903/mendeley_detection
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/mendeley_train_schema_v2.json
+    expected_ann_sha256: 1de5273a78085fd5ccc245b687dff2f17cc93aa803ca0df9859b42bf69b1fe7d
+
+val_dataloader:
+  dataset:
+    img_folder: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/external_public_prepared_20260903/mendeley_detection
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/mendeley_val_monitor256_seed2026_schema_v2.json
+    expected_ann_sha256: 079b05e0e51e2b457b7889817c9ccafb6a98caa64fbb9f3ff22666c1d9e81dba

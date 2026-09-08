@@ -1,0 +1,37 @@
+__include__: ['e2_formal_joint_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2/e3_query_1280
+epochs: 40
+freeze_backbone_epochs: 0
+evaluation_profile: joint
+inline_eval: true
+
+pareto_metrics:
+  bbox_ap: max
+  rgb_ap: max
+  ir_ap: max
+  pose_pck10: max
+  pose_nme: min
+  orientation_accuracy: max
+  head_tail_swap_rate: min
+  query_utilization: max
+  density_relative_mae: min
+
+ECDet:
+  enable_density: True
+  enable_density_capacity: True
+
+ECTransformer:
+  use_density_query: True
+  use_density_peaks: True
+  use_pattern_query: True
+  use_quality_head: True
+
+ECCriterion:
+  losses: ['mal', 'boxes', 'local', 'pose', 'density', 'quality', 'pattern']
+
+train_dataloader:
+  hard_negative_ratio: 0.25
+  dataset:
+    transforms:
+      stop_epoch: 38

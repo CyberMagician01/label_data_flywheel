@@ -1,0 +1,8 @@
+__include__: ['e6_s_fold0_full_960.yml']
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e6_s_fold2_full_960
+train_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/folds/fold2_train_13_rgb_ir.json
+val_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/folds/fold2_val_13_rgb_ir.json

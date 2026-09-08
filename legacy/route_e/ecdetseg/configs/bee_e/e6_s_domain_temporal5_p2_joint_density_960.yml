@@ -1,0 +1,28 @@
+__include__: [
+  'e5_s_temporal5_p2_joint_density_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e6_s_domain_temporal5_p2_joint_density_960
+epochs: 50
+
+train_dataloader:
+  dataset:
+    transforms:
+      stop_epoch: 48
+
+ECDet:
+  enable_density: True
+  density_in_channels: 192
+  density_hidden_channels: 96
+  enable_temporal: True
+  temporal_frames: 5
+  enable_domain_adapter: True
+  domain_channels: 192
+  domain_levels: 4
+
+ECCriterion:
+  weight_dict: {loss_mal: 1, loss_bbox: 5, loss_giou: 2, loss_fgl: 0.15, loss_ddf: 1.5,
+                loss_keypoint: 10, loss_pose_oks: 2, loss_pose_box: 0.2, loss_pose_length: 0.2,
+                loss_direction: 1, loss_visibility: 0.2,
+                loss_density_map: 1, loss_density_count: 1, loss_quality: 0.1, loss_domain: 0.2}
+  losses: ['mal', 'boxes', 'local', 'pose', 'density', 'quality', 'domain']

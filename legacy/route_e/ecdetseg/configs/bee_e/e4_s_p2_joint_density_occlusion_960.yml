@@ -1,0 +1,22 @@
+__include__: [
+  'e3_s_p2_joint_density_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e4_s_p2_joint_density_occlusion_960
+epochs: 40
+
+train_dataloader:
+  dataset:
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: RandomBeeKeypointOcclusion, p: 0.5, max_regions: 3, min_scale: 0.25, max_scale: 0.60, fill: 114}
+        - {type: RandomHorizontalFlipWithKeypoints, p: 0.5}
+        - {type: LetterBox, size: [960, 960], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: 'cxcywh', normalize: True}
+        - {type: ConvertKeypoints, normalize: True}
+      policy: default
+      stop_epoch: 38

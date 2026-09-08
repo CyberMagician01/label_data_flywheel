@@ -1,0 +1,80 @@
+{
+  "github": "https://github.com/CyberMagician01/yolo_indoor",
+  "modelscope": "https://modelscope.cn/datasets/poloso/yolo_indoor",
+  "modelscope_visibility": "private",
+  "videos": {
+    "B-5-1": 8996,
+    "B-5-2": 8996,
+    "B-5-3": 9013,
+    "B-5-4": 9005
+  },
+  "fps": 30,
+  "frame_index_base": 0,
+  "mot_frame_index_base": 1,
+  "benchmark": {
+    "test_frames": 18,
+    "calibration_frames": 18,
+    "type": "human_annotations",
+    "split": "frozen_v3_annotators_01_02_03"
+  },
+  "predictions": {
+    "type": "model_predictions_not_ground_truth",
+    "raw": "annotations/raw_pose/",
+    "final": "annotations/final/",
+    "selected": "versions/v4_indoor_appearance_iomin20_20260908/"
+  },
+  "frames": {
+    "location": "ModelScope:video_frames/",
+    "format": "tar shards containing original JPG bytes and files.json SHA256 manifests"
+  },
+  "runtime": {
+    "source_machine": "Linux, dual RTX4090",
+    "paths": "Scripts currently retain the original /root/autodl-tmp runtime paths; adapt paths before running elsewhere."
+  },
+  "pipeline": {
+    "retention_frames": 150,
+    "max_missing_interpolation_frames": 90,
+    "optical_flow_enabled": false,
+    "selected_entrypoint": "run_appearance20.py",
+    "selected_interpolation_overlap_threshold": 0.2,
+    "legacy_post_interpolation_deletion": false
+  },
+  "entrypoints": [
+    "retrain_indoor_yolo_v3_123",
+    "label_indoor_allframes_v3_fast",
+    "postprocess_indoor_density_pose_fast",
+    "pose_geometry_postprocess",
+    "manage_full_id_pipeline",
+    "shared_full_pose_scheduler",
+    "run_full_id_stage",
+    "render_full_id_previews",
+    "validate_full_id_runtime",
+    "export_interior_memory_videos"
+  ],
+  "code_files": [
+    "audit_overlap_dedup.py",
+    "consolidate_dense_and_expand_thin.py",
+    "dedup_containment_first.py",
+    "dedup_final_temporal_pose.py",
+    "dedup_overlap_tracks.py",
+    "density_speed_helpers.py",
+    "export_interior_memory_videos.py",
+    "full_id_storage.py",
+    "indoor_adaptive_recheck_4090.py",
+    "indoor_pose_fusion_full_eval_4090.py",
+    "keep_interpolation_and_ownership.py",
+    "label_indoor_allframes_v3_fast.py",
+    "manage_full_id_pipeline.py",
+    "pose_geometry_postprocess.py",
+    "postprocess_indoor_density_pose_fast.py",
+    "prefetched_pose.py",
+    "reassociate_final_bees.py",
+    "render_full_id_previews.py",
+    "repair_local_identity_conflicts.py",
+    "retrain_indoor_yolo_v3_123.py",
+    "run_full_id_stage.py",
+    "shared_full_pose_scheduler.py",
+    "track_interior_memory.py",
+    "validate_full_id_runtime.py"
+  ]
+}

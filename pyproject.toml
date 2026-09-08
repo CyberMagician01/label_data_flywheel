@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "label-data-flywheel"
+version = "0.1.0"
+description = "Dual-domain bee annotation, quality evidence, review and data feedback"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23,<3", "Pillow>=9"]
+
+[project.optional-dependencies]
+vision = ["opencv-python>=4.8", "scipy>=1.10", "requests>=2.28"]
+training = ["torch>=2.1", "PyYAML>=6"]
+test = ["pytest>=7"]
+evaluation = ["trackeval @ git+https://github.com/JonathonLuiten/TrackEval.git@12c8791b303e0a0b50f753af204249e622d0281a", "scipy>=1.10"]
+
+[project.scripts]
+bee-flywheel = "label_data_flywheel.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

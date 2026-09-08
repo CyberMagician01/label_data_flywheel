@@ -1,0 +1,8 @@
+{
+  "torch": "2.6.0",
+  "torchvision": "0.21.0",
+  "ultralytics": "8.4.138",
+  "numpy": "1.26.4",
+  "scipy": "1.15.3",
+  "opencv-python": "5.0.0.93"
+}

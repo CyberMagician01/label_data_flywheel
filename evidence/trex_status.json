@@ -1,0 +1,6 @@
+{
+  "status": "success",
+  "detections": 11,
+  "source_image": "/data/bee26/yolo/datasets/scene_A_sliced/A-5-1_frame_000605_135_0_0_640_640.png",
+  "model": "T-Rex-2.0"
+}

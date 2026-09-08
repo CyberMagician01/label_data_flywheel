@@ -1,0 +1,358 @@
+__include__: ['e_formal_contract_1280.yml']
+
+# One continuous E-S0..E-S5 lineage. The 180-cycle maximum is the calibrated
+# domain-video coverage budget; unused E-S0..E-S4 cycles flow to E-S4/E-S5.
+output_dir: /data/bee26/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_route_continuous_1280_seed2026
+seed: 2026
+epochs: 180
+print_freq: 100
+log_gradient_conflicts_every: 500
+warmup_iter: 2000
+checkpoint_freq: 1
+evaluation_profile: full
+inline_eval: false
+external_eval:
+  enabled: true
+  timeout_seconds: 7200
+  poll_seconds: 5
+pareto_metrics: null
+find_unused_parameters: true
+sync_bn: false
+enable_ddp_no_sync: true
+require_equal_domain_updates: true
+enable_continuous_stage_training: true
+# A fresh E-S0 launch is bound to the official COCO-only ECDet-M model-zoo file.
+# It must never be substituted by the separately published Objects365 model.
+bee_e_initialization:
+  source: official_ecdet_coco
+  selected_scale: M
+  selection_evidence: /data/bee26/beeposetrack_e_route_v5_unified_20260901/evidence/official_ecdet_m_coco_selection.json
+  selection_evidence_sha256: ed849b66fd2b38fc2d3c273b36c3e982bebe6712be05faa543f26036039845dd
+  checkpoint: /home/zwb/.cache/edgecrafter/ecdet_m.pth
+  sha256: c4cdf8bcd3b27c7903e422acd03caf733b5e1bfd664550bce43e50e2a3bbdc6e
+  reinitialize_output_heads: [category, quality, density, endpoints]
+bee_e_design_evidence:
+  path: /data/bee26/beeposetrack_e_route_v5_unified_20260901/evidence/route_design_preregistration_strict_v8.json
+  sha256: 26339da814276d5835be38fa8cc864c99b4ed5b0aa344476c92aa1202017e067
+bee_e_input_distribution_evidence:
+  path: /data/bee26/beeposetrack_e_route_v5_unified_20260901/evidence/input_distribution_strict_v8.json
+  sha256: 35b7847eb915ae59fcdc9be080152dc58d76f03ecba103b0c69d0e155845d741
+bee_e_split_contract:
+  protocol: video_section_near_duplicate_track_scope_fixed_5_1_1
+  source_manifest: /data/bee26/beeposetrack_y_20260827/datasets/y_unified_20260901_labelme5_a1_strict_v7_annotator03_train_test/dataset_manifest.jsonl
+  source_manifest_sha256: 13b0cd91564d5751df8cdd2f58e7e6893a1fe28e740f0d079cf8aad2083be07f
+  derived_manifest: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/dataset_manifest.jsonl
+  derived_manifest_sha256: 6e04086365bd1080b9fd92d31fab7889c8f7232a515662a888b5973a26abdd60
+  train_annotation: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/annotations/instances_train_schema_v2.json
+  train_annotation_sha256: ca2c482abf12a65b2b7ed300bd61465dff02b92519dc3e838ffaf9833b832573
+  calibration_annotation: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/annotations/instances_calibration_schema_v2.json
+  calibration_annotation_sha256: 9654677337dd3ae527feb2566ee3c701e2c3f106f85f310fb873270450c6dda5
+  dev_holdout_annotation: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/annotations/instances_dev_holdout_schema_v2.json
+  dev_holdout_annotation_sha256: c39bba29a5e19f96024a2138dd24602f334eb456cb467ccdc3ec149feac83d11
+bee_e_total_coverage_budget: 180
+bee_e_bootstrap_samples: 1000
+bee_e_minimum_plateau_window: 6
+bee_e_official_primary_metric: coco_eval_bbox
+bee_e_stage_specs:
+  - {name: E-S0, min_cycles: 12, max_cycles: 20, minimum_progress_for_transition: 0.80, initial_query_fraction: 0.6666666666666666, trainable_backbone_blocks: 2}
+  - {name: E-S1, min_cycles: 20, max_cycles: 30, minimum_progress_for_transition: 0.80}
+  - {name: E-S2, min_cycles: 20, max_cycles: 32, minimum_progress_for_transition: 0.75}
+  - {name: E-S3, min_cycles: 24, max_cycles: 36, minimum_progress_for_transition: 0.75}
+  - {name: E-S4, min_cycles: 24, max_cycles: 38, minimum_progress_for_transition: 0.75}
+  - {name: E-S5, min_cycles: 16, max_cycles: 24, minimum_progress_for_transition: 0.75}
+bee_e_metric_directions:
+  coco_eval_bbox: max
+  detection_rgb_recall: max
+  detection_ir_recall: max
+  detection_weakest_video_recall: max
+  pose_all_joint_pose_recall_iou50: max
+  pose_all_nme_bbox_diagonal: min
+  pose_all_head_tail_swap_rate: min
+  query_all_unmatched_gt_rate: min
+  query_all_duplicate_queries_per_frame: min
+  query_all_capacity_truncation_rate: min
+  density_all_relative_mae: min
+  tracking_all_idf1: max
+  tracking_all_fragment_rate: min
+bee_e_stage_constraints:
+  all:
+    detection_rgb_recall: {min: 0.05}
+    detection_ir_recall: {min: 0.05}
+  E-S0:
+    query_all_capacity_truncation_rate: {max: 0.65}
+  E-S1:
+    query_all_capacity_truncation_rate: {max: 0.02}
+    query_all_unmatched_gt_rate: {max: 0.75}
+  E-S2:
+    pose_all_joint_pose_recall_iou50: {min: 0.05}
+    pose_all_nme_bbox_diagonal: {max: 0.50}
+    pose_all_head_tail_swap_rate: {max: 0.45}
+  E-S3:
+    density_all_relative_mae: {max: 1.00}
+    tracking_all_idf1: {min: 0.01}
+  E-S4:
+    detection_weakest_video_recall: {min: 0.08}
+    query_all_unmatched_gt_rate: {max: 0.70}
+  E-S5:
+    detection_weakest_video_recall: {min: 0.10}
+    pose_all_nme_bbox_diagonal: {max: 0.45}
+    pose_all_head_tail_swap_rate: {max: 0.40}
+    query_all_capacity_truncation_rate: {max: 0.01}
+    tracking_all_fragment_rate: {max: 0.50}
+bee_e_debt_metrics:
+  coverage:
+    query_all_capacity_truncation_rate: {target: 0.01, direction: min}
+  recall:
+    detection_rgb_recall: {target: 0.80, direction: max}
+    detection_ir_recall: {target: 0.80, direction: max}
+    detection_weakest_video_recall: {target: 0.70, direction: max}
+  generalization:
+    query_all_duplicate_queries_per_frame: {target: 0.10, direction: min}
+  matching:
+    query_all_unmatched_gt_rate: {target: 0.20, direction: min}
+
+eval_spatial_size: [1280, 1280]
+grad_accum_steps: 16
+min_effective_batch_size: 32
+freeze_backbone_epochs: 0
+backbone_unfreeze_layers_per_epoch: 0
+enable_online_pseudo: true
+use_ema: true
+
+ViTAdapter:
+  # The complete SHA-verified ECDet-M COCO state is loaded by tuning after
+  # construction; do not perform a redundant backbone-only download first.
+  skip_load_backbone: true
+  num_levels: 4
+  proj_dim: [256, 256, 256, 256]
+  use_native_p2: true
+  enable_dual_domain_norm: true
+  freeze_domain_bn_stats: false
+  domain_adapter_rank: 16
+  enable_domain_layernorm: true
+  log_feature_contract: true
+
+HybridEncoder:
+  in_channels: [256, 256, 256, 256]
+  feat_strides: [4, 8, 16, 32]
+  hidden_dim: 256
+  use_encoder_idx: [3]
+  enable_p2_local_window: true
+  p2_window_size: 8
+  p2_window_heads: 8
+  p2_window_mlp_ratio: 2.0
+  enable_p2_p3_high_resolution_fusion: true
+  enable_dual_domain_norm: true
+  freeze_domain_bn_stats: false
+  enable_domain_layernorm: true
+  activation_checkpoint_high_resolution: true
+
+ECDet:
+  enable_density: true
+  density_in_channels: 256
+  density_hidden_channels: 128
+  enable_density_capacity: true
+  min_density_queries: 128
+  density_budget_ratio: 1.25
+  density_budget_padding: 32
+  enable_temporal: true
+  temporal_frames: 3
+  enable_stabilized_temporal: true
+  temporal_feature_channels: [256, 256]
+  temporal_bottleneck_channels: 64
+  temporal_gate_bias: -4.0
+  temporal_stage_multiplier: 0.0
+  # The full route uses the explicit stabilized short/long residual adapter;
+  # legacy five-frame TDC/frequency branches remain ablations only.
+  use_temporal_difference: false
+  use_frequency_gate: false
+  temporal_feature_levels: 2
+  enable_explicit_domain: true
+  enable_domain_layernorm: true
+  # P2/P3 low-rank adapters live in ViTAdapter. The older whole-pyramid
+  # mixture-of-domain-experts path is an ablation, not the complete route.
+  enable_domain_adapter: false
+  enable_shared_foreground_prototype: true
+  domain_channels: 256
+  domain_levels: 4
+  domain_expert_bottleneck_ratio: 0.25
+  domain_prototype_scale: 4.0
+  use_route_density_head: true
+  density_group_norm_groups: 32
+
+ECTransformer:
+  feat_channels: [256, 256, 256, 256]
+  feat_strides: [4, 8, 16, 32]
+  num_levels: 4
+  num_points: [3, 3, 6, 3]
+  num_layers: 4
+  num_queries: 768
+  num_keypoints: 2
+  endpoint_decoder_type: decomposed
+  endpoint_sampling_points: 8
+  use_full_endpoint_route: true
+  body_axis_radius: 0.25
+  endpoint_delta_limit: 2.0
+  use_density_query: true
+  use_density_peaks: true
+  density_peak_ratio: 0.5
+  density_peak_kernel: 3
+  density_peak_dedup_radius: 0.02
+  enable_monotonic_query_capacity: true
+  min_active_queries: 512
+  density_capacity_ratio: 1.25
+  density_capacity_padding: 32
+  uncertainty_capacity_scale: 64
+  use_quality_head: true
+  use_shared_query_content: true
+  use_track_geometry_head: true
+  num_denoising: 100
+  label_noise_ratio: 0.5
+  box_noise_scale: 1.0
+  keypoint_noise_scale: 0.1
+  head_tail_swap_ratio: 0.1
+  no_object_noise_ratio: 0.05
+  denoising_base_fraction: 0.25
+  denoising_entropy_gain: 0.75
+  initial_denoising_fraction: 0.25
+  denoising_debt_gain: 0.5
+  max_denoising_multiplier: 1.5
+  enable_domain_layernorm: true
+
+ECCriterion:
+  loss_warmup_epochs: 0
+  use_adaptive_density_target: true
+  density_scale_bandwidth: 0.15
+  density_neighbor_bandwidth: 0.25
+  density_min_sigma: 1.0
+  density_max_sigma: 12.0
+  density_foreground_weight: 8.0
+  ignore_query_iou_threshold: 0.3
+  domain_foreground_quality_threshold: 0.7
+  one2many_topk: 3
+  one2many_loss_weight: 0.1
+  losses: ['mal', 'boxes', 'local', 'pose', 'density', 'quality', 'domain', 'track', 'ir_hard_negative', 'consistency']
+  weight_dict: {loss_mal: 1, loss_bbox: 5, loss_giou: 2, loss_fgl: 0.15, loss_ddf: 1.5,
+                loss_keypoint: 5, loss_pose_oks: 2, loss_pose_box: 0.2, loss_pose_length: 0.2,
+                loss_direction: 1, loss_visibility: 0.5, loss_endpoint_uncertainty: 0.2,
+                loss_density_map: 0.1, loss_density_count: 0.1, loss_quality: 0.05,
+                loss_quality_consistency: 0.025,
+                # Explicitly neutralize the domain-classification/prototype
+                # losses inherited from the legacy formal contract. The
+                # continuous route aligns only matched P3 foreground ROIs.
+                loss_domain: 0.0, loss_domain_route_prototype: 0.0,
+                loss_domain_prototype: 0.0,
+                loss_shared_bee_prototype: 0.01, loss_track_center_scale: 0.1,
+                loss_track_axis: 0.1, loss_ir_hard_negative: 0.2,
+                loss_consistency_class: 0.2, loss_consistency_box: 1.0,
+                loss_consistency_pose: 1.0}
+  matcher:
+    type: HungarianMatcher
+    weight_dict: {cost_class: 2, cost_bbox: 5, cost_giou: 2, cost_ddf: 1.5,
+                  cost_keypoint: 5, cost_oks: 2, cost_direction: 1}
+    alpha: 0.25
+    gamma: 2.0
+    aux_positive_radius: 1.5
+
+PostProcessor:
+  num_top_queries: 768
+  enable_calibrated_filter: true
+  # E-S5 calibration rewrites these domain-specific seed values before deploy.
+  score_exponents_by_domain: {rgb: [1.0, 1.0, 1.0], ir: [1.0, 1.0, 1.0]}
+  score_thresholds_by_domain: {rgb: 0.01, ir: 0.01}
+  # DensityResidualRechecker applies the single permitted dedup pass after
+  # local detections are merged; the raw postprocessor must not run it early.
+  enable_set_dedup: false
+  endpoint_oks_sigma: 0.10
+  dedup_thresholds_by_domain:
+    rgb: {box_iou_min: 0.75, endpoint_oks_min: 0.80, relative_length_max: 0.20, oriented_axis_deg_max: 20.0}
+    ir: {box_iou_min: 0.75, endpoint_oks_min: 0.80, relative_length_max: 0.20, oriented_axis_deg_max: 20.0}
+
+bee_e_density_recheck:
+  input_size: 1280
+  max_passes: 1
+  deduplicate_after_merge: true
+  calibration_by_domain:
+    rgb: {trigger_count: 1.0, residual_threshold: 0.01, expansion_rate: 0.20, gaussian_sigma_ratio: 0.20}
+    ir: {trigger_count: 1.0, residual_threshold: 0.01, expansion_rate: 0.20, gaussian_sigma_ratio: 0.20}
+
+evaluator:
+  max_dets: [1, 10, 768]
+
+train_dataloader:
+  total_batch_size: 2
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true
+  shuffle: false
+  domain_balanced: true
+  hard_negative_ratio: 0.25
+  unlabelled_ratio: 0.25
+  correction_ratio: 0.25
+  sampler_seed: 2026
+  dataset:
+    type: TemporalCocoDetection
+    img_folder: /data/bee26/datasets/bee_e_y_unified_20260901
+    ann_file: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/annotations/instances_train_schema_v2.json
+    expected_ann_sha256: ca2c482abf12a65b2b7ed300bd61465dff02b92519dc3e838ffaf9833b832573
+    strict_domain_schema: true
+    strict_schema: true
+    schema_version: 2
+    temporal_frames: 3
+    temporal_offsets: [-4, -1, 0]
+    enable_btca_metadata: true
+    btca_short_quantile: 0.35
+    btca_min_observations: 2
+    transforms:
+      ops:
+        - {type: BeeTwoImageStitch, p: 0.15, orientations: [horizontal, vertical], effective_query_capacity: 768, capacity_safety_ratio: 0.80}
+        - {type: BeeTargetCenteredCrop, p: 0.30, scale: [0.65, 0.95], min_instances: 1, min_short_side: 2, max_truncation: 0.20}
+        - {type: BeeDensityConstrainedCrop, p: 0.30, domains: [1], scale: [0.55, 0.95], occupancy: [0.10, 0.75], effective_query_capacity: 768, capacity_safety_ratio: 0.80, min_visible_ratio: 0.80, min_short_side: 2, require_complete_endpoints: true}
+        - {type: BeeDirectionRotation, p: 0.30, degrees: 12, fill: 114}
+        - {type: BeeDirectionGapRotation, p: 0.30, bins: 12, max_degrees: 30, min_endpoint_retention: 1.0, fill: 114}
+        - {type: RandomBeeKeypointOcclusion, p: 0.50, max_regions: 3, min_scale: 0.25, max_scale: 0.60, fill: 114}
+        - {type: RandomHorizontalFlipWithKeypoints, p: 0.50}
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99, foreground_residual_quantile: 0.75}
+        - {type: IRSensorAugment, p: 0.50, gain: [0.9, 1.1], offset: [-8, 8], noise_std: [0, 4], blur_p: 0.2, hot_pixel_p: 0.001}
+        - {type: BeeRGBSensorAugment, p: 0.50, brightness: [0.85, 1.15], contrast: [0.85, 1.15], saturation: [0.85, 1.15], shadow_factor: [0.65, 0.95], motion_kernels: [1, 3, 5]}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: float32, scale: true}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: cxcywh, normalize: true}
+        - {type: ConvertKeypoints, normalize: true}
+        - {type: PrepareTemporalFrames, size: [1280, 1280], fill: 114, lower: 0.01, upper: 0.99, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], stabilize: true, stabilizer: {stable_translation: 0.35, min_phase_response: 0.05, orb_features: 1000, min_orb_matches: 12, ransac_threshold: 2.0, max_translation: 96.0, max_scale_change: 0.15, max_rotation_deg: 15.0}}
+        - {type: BeeTrajectoryTailAugment, p: 0.15, minimum_track_quality: 0.70, capacity_safety_ratio: 0.80, effective_query_capacity: 768}
+      policy: bee_e_staged
+      bee_e_stage: E-S0
+      bee_e_resolutions: {low: 1280, mid: 1280, full: 1280}
+      mosaic_epoch: 0
+      stop_epoch: 180
+  collate_fn:
+    mixup_prob: 0.0
+    mixup_epoch: 0
+
+val_dataloader:
+  total_batch_size: 1
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  dataset:
+    type: TemporalCocoDetection
+    img_folder: /data/bee26/datasets/bee_e_y_unified_20260901
+    ann_file: /data/bee26/beeposetrack_e_route_v5_unified_20260901/data/e_unified_strict_v8_annotator01_calibration_annotator03_holdout/annotations/instances_calibration_schema_v2.json
+    expected_ann_sha256: 9654677337dd3ae527feb2566ee3c701e2c3f106f85f310fb873270450c6dda5
+    strict_domain_schema: true
+    strict_schema: true
+    schema_version: 2
+    temporal_frames: 3
+    temporal_offsets: [-4, -1, 0]
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99, foreground_residual_quantile: 0.75}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: ConvertPILImage, dtype: float32, scale: true}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertKeypoints, normalize: true}
+        - {type: PrepareTemporalFrames, size: [1280, 1280], fill: 114, lower: 0.01, upper: 0.99, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], stabilize: true, stabilizer: {stable_translation: 0.35, min_phase_response: 0.05, orb_features: 1000, min_orb_matches: 12, ransac_threshold: 2.0, max_translation: 96.0, max_scale_change: 0.15, max_rotation_deg: 15.0}}
+      policy: default

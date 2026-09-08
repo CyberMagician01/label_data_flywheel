@@ -1,0 +1,15 @@
+﻿experiment,display_name,subset,instances,pck@0.05,pck@0.10,pck@0.20,orientation_accuracy,mean_angle_error_deg,median_angle_error_deg,angle_within_30deg,angle_over_45deg,nme_bbox_diagonal
+scene_A_no_public,Outdoor / own only,clean,2820,0.336525,0.660461,0.841844,0.893972,23.4425,3.7184,0.860993,0.123759,0.128185
+scene_A_no_public,Outdoor / own only,occlusion_all,2820,0.307979,0.603723,0.818085,0.887943,25.3072,4.4,0.845035,0.134752,0.139507
+scene_A_no_public,Outdoor / own only,synthetic_occlusion_only,570,0.205263,0.39386,0.739474,0.877193,29.4107,8.5259,0.817544,0.15614,0.170288
+scene_A_with_public,Outdoor / + public,clean,2820,0.330674,0.664716,0.859043,0.904255,21.0185,3.3911,0.879787,0.109574,0.121674
+scene_A_with_public,Outdoor / + public,occlusion_all,2820,0.301064,0.608865,0.841844,0.903546,22.0524,3.9151,0.872695,0.114184,0.130049
+scene_A_with_public,Outdoor / + public,synthetic_occlusion_only,570,0.203509,0.411404,0.802632,0.903509,24.4327,7.211,0.863158,0.121053,0.154534
+scene_A_with_public_occlusion_direction,Outdoor / + public + robust,clean,2820,0.311348,0.639894,0.841135,0.889362,23.9602,4.1342,0.853901,0.131915,0.129681
+scene_A_with_public_occlusion_direction,Outdoor / + public + robust,occlusion_all,2820,0.284574,0.595745,0.82961,0.889716,24.4646,4.6391,0.849645,0.13227,0.135373
+scene_A_with_public_occlusion_direction,Outdoor / + public + robust,synthetic_occlusion_only,570,0.189474,0.435088,0.796491,0.896491,25.3323,7.1426,0.845614,0.126316,0.15463
+scene_B_no_public,Indoor / own only,clean,24998,0.217817,0.482279,0.743619,0.828186,35.7399,6.5906,0.790823,0.193455,0.176088
+scene_B_with_public_all_labels,Indoor / + low-quality labels,clean,24998,0.196936,0.487019,0.765041,0.832027,35.6499,7.4091,0.788503,0.192095,0.174687
+scene_B_with_public,Indoor / + public,clean,24998,0.218677,0.490499,0.7518,0.837067,34.4473,6.6052,0.797024,0.185015,0.172576
+scene_B_with_public,Indoor / + public,occlusion_all,24998,0.214397,0.480798,0.74778,0.833627,34.9546,6.6053,0.793864,0.187775,0.174477
+scene_B_with_public,Indoor / + public,synthetic_occlusion_only,2539,0.171524,0.390705,0.703033,0.798346,40.5721,6.9827,0.757385,0.222922,0.193918

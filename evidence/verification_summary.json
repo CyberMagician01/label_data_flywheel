@@ -1,0 +1,28 @@
+{
+  "release": "flywheel_0.1.0",
+  "date": "2026-09-08",
+  "core_tests": {"passed": 26, "failed": 0, "evidence": "core_tests_release_official.log"},
+  "e_route_tests": {"passed": 153, "failed": 0, "warnings": 2, "evidence": "e_tests_final.log"},
+  "runtime_checks": {
+    "e_gpu": "e_gpu.json",
+    "training_data_bridge": "training_bridge.json",
+    "yolo_checkpoint": "yolo_smoke.json",
+    "vitpose_rgb_ir": "pose_smoke_status.json",
+    "density_rgb_ir": "density_smoke.json",
+    "sam_original_30fps": "sam_smoke_4090.json",
+    "trex_visual_api": "trex_status.json",
+    "full_round_32_real_frames": "real_clip_round.json"
+  },
+  "historical_failures": {
+    "model_smoke_first.json": "第一次姿态运行接口不匹配，修复后以 pose_smoke_status.json 为最终结果；原失败记录保留。"
+  },
+  "scope": {
+    "all_real_model_execution_on_servers": true,
+    "existing_selected_versions_preserved": true,
+    "full_six_stage_training_rerun": false,
+    "new_flywheel_accuracy_improvement_established": false,
+    "human_behavior_benchmark_available": false,
+    "trex_text_hybrid_service_tested": false,
+    "behavior_outputs": "candidates_until_human_confirmed"
+  }
+}

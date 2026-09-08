@@ -1,0 +1,16 @@
+__include__: ['e4_formal_temporal_domain_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2/e5_semisupervised_1280
+epochs: 60
+enable_online_pseudo: True
+
+ECCriterion:
+  losses: ['mal', 'boxes', 'local', 'pose', 'density', 'quality', 'pattern',
+           'domain', 'track', 'ir_hard_negative', 'consistency']
+
+train_dataloader:
+  unlabelled_ratio: 0.25
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/train_13_rgb_ir_schema_v2.json
+    transforms:
+      stop_epoch: 58

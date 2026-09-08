@@ -1,0 +1,7 @@
+{
+  "detections": 126,
+  "pose_instances": 126,
+  "checkpoint": "/data/bee26/beeposetrack_y_20260827/runs_schema_v2_trackfix/a1_train_test/a1_train_test_yolo26m_schema_v2_trackfix_public_seed2026_img1280_eb16/weights/best.pt",
+  "checkpoint_sha256": "9f0d2e303c3867d1625d3f41fb1061cc1de1983b3fc49eedddf89f33d3bc0535",
+  "accuracy_measurement": false
+}

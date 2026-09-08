@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "device": "NVIDIA GeForce RTX 3090",
+  "domains_in_update": [
+    "RGB",
+    "IR"
+  ],
+  "loss_terms": 123,
+  "finite_loss": 55.80816650390625,
+  "parameters_with_gradient": 670,
+  "optimizer_changed_parameters": true,
+  "output_shape": [
+    2,
+    768,
+    4
+  ],
+  "elapsed_seconds": 8.345558166503906,
+  "weights": "random_initialization_for_execution_test",
+  "accuracy_measurement": false
+}

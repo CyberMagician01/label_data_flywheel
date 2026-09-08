@@ -1,0 +1,12 @@
+{
+  "backends": {
+    "vitpose": {"python":"/data/bee26/vitpose_bee_current/env/bin/python", "script":"tools/infer_models.py", "defaults":["vitpose","--vitpose-root","/data/bee26/vitpose_bee_current/third_party/ViTPose"]},
+    "density": {"python":"/data/bee26/vitpose_bee_current/env/bin/python", "script":"tools/infer_models.py", "defaults":["density"]},
+    "yolo": {"python":"/data/bee26/count/envs/count-anything/bin/python", "script":"tools/infer_models.py", "defaults":["yolo"]},
+    "train_y_legacy": {"python":"/data/bee26/count/envs/count-anything/bin/python", "script":"legacy/route_y/tools/train_y_route_best.py"},
+    "train_e": {"python":"/data/bee26/beeposetrack_e_20260827/env/bin/python", "script":"legacy/route_e/ecdetseg/train.py", "cwd":"legacy/route_e/ecdetseg", "env":{"PYTHONPATH":"{root}/legacy/route_e/ecdetseg","CUDA_VISIBLE_DEVICES":"0"}},
+    "train_density": {"python":"/data/bee26/vitpose_bee_current/env/bin/python", "script":"legacy/server_experiments/train_bee_density.py"},
+    "count_anything": {"python":"/data/bee26/count/envs/count-anything/bin/python", "script":"legacy/server_experiments/train_count_anything_bee24.py"},
+    "countgdpp": {"python":"/data/bee26/count/envs/countgdpp/bin/python", "script":"legacy/server_experiments/train_countgdpp_bee24.py"}
+  }
+}

@@ -1,0 +1,19 @@
+__include__: ['e_pa_dual_scene_bee24_o3652coco_1280.yml']
+
+# PA is detection-only: the outdoor score must not include unsupervised visibility.
+ECTransformer:
+  query_capacity_by_scene:
+    outdoor: {min_active_queries: 512, stage_query_limit: 512}
+
+PostProcessor:
+  score_exponents_by_scene:
+    outdoor: [1.0, 1.0, 0.0]
+  score_thresholds_by_scene:
+    outdoor: 0.01
+  num_top_queries_by_scene:
+    outdoor: 512
+  box_nms_iou_by_scene:
+    outdoor: 0.75
+
+# Indoor/B intentionally inherits the original 512..768 logical capacity and
+# has no fixed NMS threshold until indoor calibration data are evaluated.

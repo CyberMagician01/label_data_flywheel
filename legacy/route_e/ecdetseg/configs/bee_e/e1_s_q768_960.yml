@@ -1,0 +1,42 @@
+__include__: [
+  'e1_s_q300_1280.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e1_s_q768_960
+eval_spatial_size: [960, 960]
+
+train_dataloader:
+  dataset:
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: RandomHorizontalFlipWithKeypoints, p: 0.5}
+        - {type: LetterBox, size: [960, 960], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: 'cxcywh', normalize: True}
+      policy: default
+      mosaic_epoch: 0
+      mosaic_prob: 0.0
+      stop_epoch: 74
+      remove_ops: []
+
+val_dataloader:
+  dataset:
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: LetterBox, size: [960, 960], fill: 114}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+      policy: default
+
+ECTransformer:
+  num_queries: 768
+
+PostProcessor:
+  num_top_queries: 768
+
+evaluator:
+  max_dets: [1, 10, 768]

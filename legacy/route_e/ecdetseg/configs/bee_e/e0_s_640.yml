@@ -1,0 +1,29 @@
+__include__: [
+  '../ecdet/ecdet_s.yml',
+  '../dataset/bee_e_13.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e0_s_640
+eval_spatial_size: [640, 640]
+epochs: 74
+warmup_iter: 100
+checkpoint_freq: 10
+print_freq: 20
+grad_accum_steps: 8
+
+train_dataloader:
+  total_batch_size: 2
+  dataset:
+    transforms:
+      mosaic_epoch: 36
+      mosaic_prob: 0.5
+      stop_epoch: 72
+  collate_fn:
+    mixup_prob: 0.5
+    mixup_epoch: 36
+
+val_dataloader:
+  total_batch_size: 2
+
+PostProcessor:
+  num_top_queries: 300

@@ -1,0 +1,6 @@
+__include__: ['e_curriculum_mendeley_detection_1280.yml']
+
+val_dataloader:
+  dataset:
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/mendeley_val_schema_v2.json
+    expected_ann_sha256: f34495a7be959da8115f65820ec277b8bc589efe7a4cdd8a1c8b551b4fd60046

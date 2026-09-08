@@ -1,0 +1,34 @@
+{
+  "started": 1788804261.873526,
+  "models": [
+    {
+      "scene": "A",
+      "model": "density",
+      "exit_code": 0,
+      "seconds": 14.316654920578003,
+      "estimated_count": 30.686107635498047,
+      "manual_frame_count": 20
+    },
+    {
+      "scene": "A",
+      "model": "vitpose",
+      "exit_code": 1,
+      "seconds": 0.30617523193359375
+    },
+    {
+      "scene": "B",
+      "model": "density",
+      "exit_code": 0,
+      "seconds": 5.385287761688232,
+      "estimated_count": 305.43701171875,
+      "manual_frame_count": 328
+    },
+    {
+      "scene": "B",
+      "model": "vitpose",
+      "exit_code": 1,
+      "seconds": 0.31955909729003906
+    }
+  ],
+  "all_passed": false
+}

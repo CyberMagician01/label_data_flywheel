@@ -1,0 +1,18 @@
+__include__: [
+  'e5_s_temporal5_p2_joint_density_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e5_s_temporal_average_960
+epochs: 50
+
+# Fair temporal ablation: identical five-frame input and training budget,
+# but without temporal differences or spatial frequency bands.
+ECDet:
+  enable_density: True
+  density_in_channels: 192
+  density_hidden_channels: 96
+  enable_temporal: True
+  temporal_frames: 5
+  use_temporal_difference: False
+  use_frequency_gate: False
+  temporal_feature_levels: 2

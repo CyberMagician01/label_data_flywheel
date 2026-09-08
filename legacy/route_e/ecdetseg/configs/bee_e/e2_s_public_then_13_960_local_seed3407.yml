@@ -1,0 +1,17 @@
+__include__: [
+  'e2_s_public_then_13_960.yml',
+]
+
+output_dir: H:/揭榜挂帅/复现UDMT/work_dirs/beeposetrack_e_local_20260828/e2_s_public_then_13_960_seed3407
+
+train_dataloader:
+  num_workers: 0
+  dataset:
+    img_folder: H:/揭榜挂帅/复现UDMT/data/bee_keypoints_13_20260827
+    ann_file: H:/揭榜挂帅/复现UDMT/data/bee_e_route_20260827/annotations/train_13_rgb_ir.json
+
+val_dataloader:
+  num_workers: 0
+  dataset:
+    img_folder: H:/揭榜挂帅/复现UDMT/data/bee_keypoints_13_20260827
+    ann_file: H:/揭榜挂帅/复现UDMT/data/bee_e_route_20260827/annotations/val_13_rgb_ir.json

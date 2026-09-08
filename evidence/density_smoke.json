@@ -1,0 +1,21 @@
+{
+  "models": [
+    {
+      "scene": "A",
+      "model": "density",
+      "exit_code": 0,
+      "seconds": 14.316654920578003,
+      "estimated_count": 30.686107635498047,
+      "manual_frame_count": 20
+    },
+    {
+      "scene": "B",
+      "model": "density",
+      "exit_code": 0,
+      "seconds": 5.385287761688232,
+      "estimated_count": 305.43701171875,
+      "manual_frame_count": 328
+    }
+  ],
+  "scope": "two real images, execution only; not benchmark accuracy"
+}

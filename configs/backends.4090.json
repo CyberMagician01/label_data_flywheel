@@ -1,0 +1,20 @@
+{
+  "backends": {
+    "indoor_appearance20": {
+      "python":"/root/bee_tracking_pilot_20260907/env/bin/python",
+      "script":"legacy/indoor/run_appearance20.py",
+      "defaults":["--gpus","0,1"]
+    },
+    "outdoor_sam21": {
+      "python":"/root/autodl-tmp/flywheel_outdoor_pose_20260903/env/bin/python",
+      "script":"legacy/outdoor/sam2_bee_tracker.py",
+      "env":{"PYTHONPATH":"/root/sam_indoor_pilot_20260907/deps:/root/sam_indoor_pilot_20260907/sam2_source"},
+      "defaults":["--fps","30"]
+    },
+    "outdoor_snapping": {
+      "python":"/root/autodl-tmp/flywheel_outdoor_pose_20260903/env/bin/python",
+      "script":"legacy/outdoor/apply_postprocess_snapping.py",
+      "defaults":["--fps","30"]
+    }
+  }
+}

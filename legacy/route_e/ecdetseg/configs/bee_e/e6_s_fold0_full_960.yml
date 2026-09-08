@@ -1,0 +1,10 @@
+__include__: ['e6_s_domain_temporal5_p2_joint_density_960.yml']
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e6_s_fold0_full_960
+epochs: 100
+train_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/folds/fold0_train_13_rgb_ir.json
+    transforms: {stop_epoch: 98}
+val_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/folds/fold0_val_13_rgb_ir.json

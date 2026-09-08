@@ -1,0 +1,11 @@
+........................................................................ [ 47%]
+........................................................................ [ 94%]
+.........                                                                [100%]
+=============================== warnings summary ===============================
+legacy/route_e/ecdetseg/tests/bee_e/test_m2_pipeline.py::test_inline_evaluation_cannot_advance_training_rng
+legacy/route_e/ecdetseg/tests/bee_e/test_m2_pipeline.py::test_sync_and_async_training_state_equivalence
+  /data/bee26/beeposetrack_e_20260827/env/lib/python3.10/site-packages/torch/cuda/__init__.py:734: UserWarning: Can't initialize NVML
+    warnings.warn("Can't initialize NVML")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+153 passed, 2 warnings in 9.39s

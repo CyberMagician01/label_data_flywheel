@@ -1,0 +1,9 @@
+__include__: [
+  'e2_s_p2_joint_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e2_s_p2_local_joint_960
+
+ECTransformer:
+  use_local_endpoint_sampling: True
+

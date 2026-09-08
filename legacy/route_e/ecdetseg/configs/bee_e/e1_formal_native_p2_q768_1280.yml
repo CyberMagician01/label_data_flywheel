@@ -1,0 +1,18 @@
+__include__: ['e_formal_contract_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2/e1_native_p2_q768_1280
+epochs: 74
+freeze_backbone_epochs: 0
+evaluation_profile: detection
+inline_eval: false
+
+pareto_metrics:
+  bbox_ap: max
+  rgb_ap: max
+  ir_ap: max
+  query_utilization: max
+
+train_dataloader:
+  dataset:
+    transforms:
+      stop_epoch: 72

@@ -1,0 +1,13 @@
+__include__: [
+  'e6_s_domain_temporal5_p2_joint_density_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e5_s_semisupervised_960
+epochs: 60
+
+train_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/train_13_with_pseudo.json
+    transforms:
+      stop_epoch: 58
+

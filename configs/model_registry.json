@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "policy": "现有用户选定版本固定保留；候选必须提供相同数据哈希、划分、评测协议和真实指标才能提升。",
+  "selected": {
+    "indoor_tracking": {
+      "version": "v4_indoor_appearance_iomin20_20260908",
+      "selection_basis": "user_visual_selection_and_existing_full_release",
+      "evaluation_status": "retained_reference",
+      "dataset": "poloso/yolo_indoor",
+      "release_path": "versions/v4_indoor_appearance_iomin20_20260908/",
+      "entrypoint": "legacy/indoor/run_appearance20.py",
+      "configuration": "legacy/indoor/pipelines/appearance20/config.json"
+    },
+    "outdoor_tracking": {
+      "selection_basis": "requested_upstream_original",
+      "upstream_commit": "6d507c0b12709618e0760aaec020b49686dd7247",
+      "entrypoint": "legacy/outdoor/sam2_bee_tracker.py",
+      "postprocess": "legacy/outdoor/apply_postprocess_snapping.py"
+    }
+  },
+  "integration_candidate": {
+    "version": "flywheel_0.1.0",
+    "evaluation_status": "runtime_validation_only",
+    "full_training_complete": false,
+    "promoted_over_selected": false,
+    "metrics": null
+  }
+}

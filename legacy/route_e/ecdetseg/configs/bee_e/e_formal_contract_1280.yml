@@ -1,0 +1,191 @@
+# BeePoseTrack-E 1280/256 structural contract.
+# This is a single-frame detection base. Stage configs E1-E6 explicitly enable
+# pose, query optimization, temporal/domain and semi-supervised capabilities.
+__include__: [
+  'e0_m_640.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_contract_1280
+eval_spatial_size: [1280, 1280]
+epochs: 92
+warmup_iter: 2000
+checkpoint_freq: 1
+grad_accum_steps: 16
+use_amp: True
+scaler:
+  type: GradScaler
+  enabled: True
+  init_scale: 8.0
+clip_max_norm: 1.0
+query_clip_max_norm: 0.1
+min_effective_batch_size: 16
+freeze_backbone_epochs: 10
+backbone_unfreeze_layers_per_epoch: 2
+stop_aug_resume_checkpoint: null
+pareto_metrics:
+  bbox_ap: max
+  rgb_ap: max
+  ir_ap: max
+  query_utilization: max
+enable_online_pseudo: False
+pseudo_score_threshold: 0.35
+pseudo_quality_threshold: 0.30
+pseudo_set_iou_threshold: 0.50
+pseudo_endpoint_threshold: 0.15
+pseudo_trajectory_iou_threshold: 0.30
+max_pseudo_instances: 256
+pseudo_ignore_score_threshold: 0.55
+log_gradient_conflicts_every: 100
+
+ViTAdapter:
+  name: ecvittplus
+  embed_dim: 256
+  num_heads: 4
+  interaction_indexes: [10, 11]
+  num_levels: 4
+  proj_dim: 256
+  use_native_p2: True
+  log_feature_contract: True
+
+HybridEncoder:
+  in_channels: [256, 256, 256, 256]
+  feat_strides: [4, 8, 16, 32]
+  hidden_dim: 256
+  use_encoder_idx: [3]
+
+ECDet:
+  enable_density: False
+  density_in_channels: 256
+  density_hidden_channels: 128
+  enable_density_capacity: False
+  min_density_queries: 128
+  density_budget_ratio: 1.25
+  density_budget_padding: 32
+  enable_temporal: False
+  temporal_frames: 5
+  use_temporal_difference: True
+  use_frequency_gate: True
+  temporal_feature_levels: 2
+  enable_domain_adapter: False
+  domain_channels: 256
+  domain_levels: 2
+  domain_expert_bottleneck_ratio: 0.25
+  domain_prototype_scale: 4.0
+
+ECTransformer:
+  feat_channels: [256, 256, 256, 256]
+  feat_strides: [4, 8, 16, 32]
+  hidden_dim: 256
+  num_levels: 4
+  num_points: [3, 3, 6, 3]
+  num_layers: 4
+  layer_scale: 1
+  num_queries: 768
+  num_keypoints: 0
+  endpoint_decoder_type: decomposed
+  endpoint_sampling_points: 8
+  use_density_query: False
+  use_density_peaks: False
+  density_peak_ratio: 0.5
+  density_peak_kernel: 3
+  density_peak_dedup_radius: 0.02
+  use_pattern_query: False
+  num_query_patterns: 8
+  use_quality_head: False
+  use_track_geometry_head: False
+  keypoint_noise_scale: 0.1
+  head_tail_swap_ratio: 0.1
+
+ECCriterion:
+  loss_warmup_epochs: 10
+  weight_dict: {loss_mal: 1, loss_bbox: 5, loss_giou: 2, loss_fgl: 0.15, loss_ddf: 1.5,
+                loss_keypoint: 5, loss_pose_oks: 2, loss_pose_box: 0.2, loss_pose_length: 0.2,
+                loss_direction: 1, loss_visibility: 0.5,
+                loss_density_map: 0.1, loss_density_count: 0.1, loss_quality: 0.05,
+                loss_quality_consistency: 0.025, loss_pattern_balance: 0.025,
+                loss_domain: 0.02, loss_domain_route_prototype: 0.01,
+                loss_domain_prototype: 0.01, loss_shared_bee_prototype: 0.01,
+                loss_track_center_scale: 0.1, loss_track_axis: 0.1,
+                loss_ir_hard_negative: 0.2,
+                loss_consistency_class: 0.2, loss_consistency_box: 1.0,
+                loss_consistency_pose: 1.0}
+  losses: ['mal', 'boxes', 'local']
+  one2many_topk: 3
+  one2many_loss_weight: 0.1
+  matcher:
+    type: HungarianMatcher
+    weight_dict: {cost_class: 2, cost_bbox: 5, cost_giou: 2,
+                  cost_keypoint: 5, cost_oks: 2, cost_direction: 1}
+    alpha: 0.25
+    gamma: 2.0
+
+PostProcessor:
+  num_top_queries: 768
+
+evaluator:
+  max_dets: [1, 10, 768]
+
+train_dataloader:
+  total_batch_size: 2
+  shuffle: False
+  domain_balanced: True
+  hard_negative_ratio: 0.0
+  unlabelled_ratio: 0.0
+  sampler_seed: 2026
+  dataset:
+    type: CocoDetection
+    img_folder: /data/bee26/vitpose_size_ablation_13_20260827/data/bee_keypoints_13_20260827
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/train_13_rgb_ir_schema_v2.json
+    strict_domain_schema: True
+    strict_schema: True
+    schema_version: 2
+    transforms:
+      ops:
+        - {type: BeeTargetCenteredCrop, p: 0.3, scale: [0.65, 0.95], min_instances: 1, min_short_side: 2, max_truncation: 0.2}
+        - {type: BeeDirectionRotation, p: 0.3, degrees: 12, fill: 114}
+        - {type: RandomHorizontalFlipWithKeypoints, p: 0.5}
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: IRSensorAugment, p: 0.5, gain: [0.9, 1.1], offset: [-8, 8], noise_std: [0, 4], blur_p: 0.2, hot_pixel_p: 0.001}
+        - {type: BeeRGBSensorAugment, p: 0.5, brightness: [0.85, 1.15], contrast: [0.85, 1.15], saturation: [0.85, 1.15], shadow_factor: [0.65, 0.95], motion_kernels: [1, 3, 5]}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: 'cxcywh', normalize: True}
+        - {type: ConvertKeypoints, normalize: True}
+      policy: default
+      stop_epoch: 90
+  collate_fn:
+    mixup_prob: 0.0
+    mixup_epoch: 0
+
+val_dataloader:
+  total_batch_size: 1
+  dataset:
+    type: CocoDetection
+    img_folder: /data/bee26/vitpose_size_ablation_13_20260827/data/bee_keypoints_13_20260827
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/val_13_rgb_ir_schema_v2.json
+    strict_domain_schema: True
+    strict_schema: True
+    schema_version: 2
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertKeypoints, normalize: True}
+      policy: default
+
+optimizer:
+  lr: 0.0001
+  weight_decay: 0.000125
+  params:
+    # Official pretrained ViT trunk only.  Native P2 is intentionally excluded.
+    - {params: '^backbone\.backbone\.(?!.*(?:norm|bn|bias)).*$', lr: 0.000005}
+    - {params: '^backbone\.backbone\.(?=.*(?:norm|bn|bias)).*$', lr: 0.000005, weight_decay: 0.}
+    # New P2, density, pattern-query, endpoint and domain-expert modules.
+    - {params: '^(?!backbone\.backbone\.)(?=.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?!.*(?:norm|bn|bias)).*$', lr: 0.0002}
+    - {params: '^(?!backbone\.backbone\.)(?=.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?=.*(?:norm|bn|bias)).*$', lr: 0.0002, weight_decay: 0.}
+    # Hybrid Encoder and instance Decoder use the base 1e-4 LR. Norm/bias do not decay.
+    - {params: '^(?!backbone\.backbone\.)(?!.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?=.*(?:norm|bn|bias)).*$', weight_decay: 0.}

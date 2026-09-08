@@ -1,0 +1,34 @@
+__include__: ['e5_formal_semisupervised_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2/e6_final_1280
+epochs: 30
+warmup_iter: 2000
+enable_online_pseudo: False
+
+train_dataloader:
+  hard_negative_ratio: 0.0
+  unlabelled_ratio: 0.0
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/train_13_rgb_ir_schema_v2.json
+    transforms:
+      ops:
+        - {type: IRPercentileNormalize, lower: 0.01, upper: 0.99}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: 'cxcywh', normalize: True}
+        - {type: ConvertKeypoints, normalize: True}
+        - {type: PrepareTemporalFrames, size: [1280, 1280], fill: 114, lower: 0.01, upper: 0.99, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+      policy: default
+      stop_epoch: 30
+
+optimizer:
+  lr: 0.00001
+  weight_decay: 0.000125
+  params:
+    - {params: '^backbone\.backbone\.(?!.*(?:norm|bn|bias)).*$', lr: 0.0000005}
+    - {params: '^backbone\.backbone\.(?=.*(?:norm|bn|bias)).*$', lr: 0.0000005, weight_decay: 0.}
+    - {params: '^(?!backbone\.backbone\.)(?=.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?!.*(?:norm|bn|bias)).*$', lr: 0.00002}
+    - {params: '^(?!backbone\.backbone\.)(?=.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?=.*(?:norm|bn|bias)).*$', lr: 0.00002, weight_decay: 0.}
+    - {params: '^(?!backbone\.backbone\.)(?!.*(?:native_p2_adapter|history_p3_adapter|density|pattern|endpoint|domain|prototype))(?=.*(?:norm|bn|bias)).*$', weight_decay: 0.}

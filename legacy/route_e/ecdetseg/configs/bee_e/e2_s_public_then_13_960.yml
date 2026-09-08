@@ -1,0 +1,12 @@
+__include__: [
+  'e2_s_p2_local_joint_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e2_s_public_then_13_960
+epochs: 92
+
+train_dataloader:
+  dataset:
+    transforms:
+      stop_epoch: 90
+

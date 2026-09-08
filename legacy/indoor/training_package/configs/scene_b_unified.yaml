@@ -1,0 +1,8 @@
+path: /root/autodl-tmp/datasets/scene_B_annotators_01_02_03_sliced_20260905
+train: images/train
+val: images/calibration
+test: images/test
+
+# Classes
+names:
+  0: bee

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+*.pt
+*.pth
+*.mp4
+*.jpg
+*.tar
+*.tar.gz

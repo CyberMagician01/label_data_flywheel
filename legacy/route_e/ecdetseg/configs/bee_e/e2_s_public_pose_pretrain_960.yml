@@ -1,0 +1,19 @@
+__include__: [
+  'e2_s_p2_local_joint_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e2_s_public_pose_pretrain_960
+epochs: 24
+
+train_dataloader:
+  dataset:
+    img_folder: /data/bee26/beeposetrack_e_20260827/data/public_images
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/public_bee_pose_train.json
+    transforms:
+      stop_epoch: 22
+
+val_dataloader:
+  dataset:
+    img_folder: /data/bee26/beeposetrack_e_20260827/data/public_images
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/public_bee_pose_val.json
+

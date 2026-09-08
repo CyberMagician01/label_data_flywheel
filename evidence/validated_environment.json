@@ -1,0 +1,8 @@
+{
+  "numpy": "2.0.1",
+  "scipy": "1.15.3",
+  "torch": "2.6.0+cu118",
+  "Pillow": "12.3.0",
+  "opencv-python": "5.0.0.93",
+  "trackeval_source_commit": "12c8791b303e0a0b50f753af204249e622d0281a"
+}

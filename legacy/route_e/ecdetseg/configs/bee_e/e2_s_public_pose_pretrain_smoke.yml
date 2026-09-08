@@ -1,0 +1,36 @@
+__include__: [
+  'e2_s_public_pose_pretrain_960.yml',
+]
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e2_s_public_pose_pretrain_smoke
+eval_spatial_size: [128, 128]
+epochs: 1
+warmup_iter: 1
+checkpoint_freq: 1
+print_freq: 1
+sync_bn: False
+use_ema: False
+grad_accum_steps: 1
+
+ECTransformer:
+  num_queries: 300
+
+train_dataloader:
+  total_batch_size: 2
+  num_workers: 0
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/public_bee_pose_train_smoke.json
+    transforms:
+      stop_epoch: 1
+
+val_dataloader:
+  total_batch_size: 2
+  num_workers: 0
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/data/annotations/public_bee_pose_val_smoke.json
+
+PostProcessor:
+  num_top_queries: 300
+
+evaluator:
+  max_dets: [1, 10, 300]

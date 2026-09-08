@@ -1,0 +1,111 @@
+__include__: ['e_route_continuous_1280.yml']
+
+output_dir: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_pa_dual_scene_bee24_o3652coco_1280_seed2026
+seed: 2026
+epochs: 20
+warmup_iter: 100
+checkpoint_freq: 1
+inline_eval: true
+inline_eval_freq: 5
+external_eval: {enabled: false}
+pareto_metrics: null
+enable_continuous_stage_training: false
+require_equal_domain_updates: false
+enable_online_pseudo: false
+bee_e_split_contract: null
+bee_e_design_evidence: null
+bee_e_input_distribution_evidence: null
+grad_accum_steps: 8
+min_effective_batch_size: 32
+scaler:
+  type: GradScaler
+  enabled: true
+  init_scale: 1.0
+
+bee_e_initialization:
+  source: official_ecdet_o3652coco
+  selected_scale: M
+  checkpoint: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/weights/ecdet_m_o3652coco.pth
+  sha256: e134552c75fa1bec850cb3f95eded64eac8c015abbfe14d5dd6ae141e6da66b2
+  reinitialize_output_heads: [category, quality, density, endpoints]
+
+ViTAdapter:
+  freeze_domain_bn_stats: true
+
+HybridEncoder:
+  freeze_domain_bn_stats: true
+  activation_checkpoint_high_resolution: true
+
+ECDet:
+  enable_temporal: true
+  temporal_frames: 3
+  temporal_stage_multiplier: 1.0
+
+ECTransformer:
+  enable_scene_detection_heads: true
+  num_scene_heads: 2
+
+ECCriterion:
+  losses: ['mal', 'boxes', 'local', 'density', 'quality', 'track']
+
+train_dataloader:
+  total_batch_size: 4
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true
+  shuffle: true
+  domain_balanced: false
+  dataset:
+    type: TemporalCocoDetection
+    img_folder: /data/bee26/datasets/bee_e_y_unified_20260901
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/public_preadaptation_v1/bee24_train_schema_v2.json
+    expected_ann_sha256: 252e7f8bfa2dbfd6bdf96a3ac34acd0f25643c493d6488682e2a1967407b3028
+    strict_domain_schema: true
+    strict_scene_schema: true
+    default_scene: outdoor
+    strict_schema: true
+    schema_version: 2
+    temporal_frames: 3
+    temporal_offsets: [-4, -1, 0]
+    enable_btca_metadata: true
+    transforms:
+      ops:
+        - {type: BeeTargetCenteredCrop, p: 0.30, scale: [0.65, 0.95], min_instances: 1, min_short_side: 2, max_truncation: 0.20}
+        - {type: BeeRGBSensorAugment, p: 0.50, brightness: [0.85, 1.15], contrast: [0.85, 1.15], saturation: [0.85, 1.15], shadow_factor: [0.65, 0.95], motion_kernels: [1, 3, 5]}
+        - {type: RandomHorizontalFlipWithKeypoints, p: 0.50}
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: SanitizeBoundingBoxes, min_size: 1}
+        - {type: ConvertPILImage, dtype: float32, scale: true}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertBoxes, fmt: cxcywh, normalize: true}
+        - {type: ConvertKeypoints, normalize: true}
+        - {type: PrepareTemporalFrames, size: [1280, 1280], fill: 114, lower: 0.01, upper: 0.99, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], stabilize: true, stabilizer: {stable_translation: 0.35, min_phase_response: 0.05, orb_features: 1000, min_orb_matches: 12, ransac_threshold: 2.0, max_translation: 96.0, max_scale_change: 0.15, max_rotation_deg: 15.0}}
+      policy: default
+      stop_epoch: 20
+  collate_fn: {mixup_prob: 0.0, mixup_epoch: 0}
+
+val_dataloader:
+  total_batch_size: 2
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  dataset:
+    type: TemporalCocoDetection
+    img_folder: /data/bee26/datasets/bee_e_y_unified_20260901
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/public_preadaptation_v1/bee24_test_schema_v2.json
+    expected_ann_sha256: d2eeb1cdd9ed61b7f0cd86b2770f8a3472a544ff0f5d5181b7cffb1c78b93197
+    strict_domain_schema: true
+    strict_scene_schema: true
+    default_scene: outdoor
+    strict_schema: true
+    schema_version: 2
+    temporal_frames: 3
+    temporal_offsets: [-4, -1, 0]
+    transforms:
+      ops:
+        - {type: LetterBox, size: [1280, 1280], fill: 114}
+        - {type: ConvertPILImage, dtype: float32, scale: true}
+        - {type: Normalize, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+        - {type: ConvertKeypoints, normalize: true}
+        - {type: PrepareTemporalFrames, size: [1280, 1280], fill: 114, lower: 0.01, upper: 0.99, mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], stabilize: true, stabilizer: {stable_translation: 0.35, min_phase_response: 0.05, orb_features: 1000, min_orb_matches: 12, ransac_threshold: 2.0, max_translation: 96.0, max_scale_change: 0.15, max_rotation_deg: 15.0}}
+      policy: default

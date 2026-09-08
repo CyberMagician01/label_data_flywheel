@@ -1,0 +1,6 @@
+path: /root/autodl-tmp/indoor_scene_b_yolov8x_p2_framework_20260905/eval/views/标注员_03
+train: images/test
+val: images/test
+test: images/test
+names:
+  0: bee

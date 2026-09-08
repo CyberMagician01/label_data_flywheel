@@ -1,0 +1,29 @@
+{
+  "videos": {
+    "B-5-1": 8996,
+    "B-5-2": 8996,
+    "B-5-3": 9013,
+    "B-5-4": 9005
+  },
+  "total_frames": 36010,
+  "fps": 30,
+  "frame_index_base": 0,
+  "image_size": [
+    1920,
+    1080
+  ],
+  "detector_source": "/root/autodl-tmp/indoor_ids_full_latest_20260906/final/frames",
+  "exclude_origin": "reassociation_interpolation",
+  "appearance_checkpoint": "/root/bee_tracking_pilot_20260907/integration_portability_test_20260908/runtime/data/checkpoints/inception/model_005000.ckpt.index",
+  "internal_retention_frames": 150,
+  "edge_retention_frames": 75,
+  "minimum_observations": 30,
+  "maximum_endpoint_gap_frames": 90,
+  "overlap_threshold": 0.2,
+  "overlap_definition": "intersection/minimum_box_area",
+  "minimum_intersection_pixels": 16,
+  "suppression_only_interpolation": true,
+  "whole_video_association": true,
+  "restart_ids_at_chunks": false,
+  "reuse_candidates": 0
+}

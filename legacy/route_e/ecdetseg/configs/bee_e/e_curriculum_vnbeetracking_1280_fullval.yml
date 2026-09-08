@@ -1,0 +1,6 @@
+__include__: ['e_curriculum_vnbeetracking_1280.yml']
+
+val_dataloader:
+  dataset:
+    ann_file: /root/autodl-tmp/beeposetrack_e_route_v5_unified_20260901/data/curriculum_public_detection_v1/vn_val_schema_v2.json
+    expected_ann_sha256: 35f4c5ebbeae1e0d41d35d4459e5413ab276c8ca62507a4cb1763d616ce8030e

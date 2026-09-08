@@ -1,0 +1,45 @@
+{
+  "config_sha256": "6d99891c73f334656a13e438a1049e3929c01378c851b301d4a1a66c6d241c5c",
+  "frames": 32,
+  "visible_boxes": 8319,
+  "hidden_boxes": 3760,
+  "original_observation_boxes_unchanged": 6587,
+  "quality_layers": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "quality_is_consistency_evidence_not_gt_accuracy": true,
+  "events_are_candidates": true,
+  "review_candidates": 20,
+  "source_fingerprints": [
+    {
+      "path": "/data/bee26/label_data_flywheel_integration_20260908/real_smoke/ir_v4_clip.jsonl",
+      "sha256": "bcbbc764aa5fd7210a0d655bf64575f6ebf0522c72b62ea39705a4e84b3ee290",
+      "selected_frames": 16
+    },
+    {
+      "path": "/data/bee26/label_data_flywheel_integration_20260908/real_smoke/rgb_sam_clip.json",
+      "sha256": "39b2155e01ebc50ced8aa44210b529126bf17dc113893f2616632e31631d2402",
+      "selected_frames": 16
+    },
+    {
+      "role": "pose",
+      "path": "/data/bee26/label_data_flywheel_integration_20260908/real_smoke/rgb_pose_clip.jsonl",
+      "sha256": "16a4e15ebfe1e12181ade9150d41df2ae9832ae16723347ed38e2f2a64b5fbe2"
+    }
+  ],
+  "auxiliary_fingerprints": {},
+  "training_snapshot": null,
+  "sampling_gate": null,
+  "output_sha256": "e531f8c2c627b04f297359d4a620e067cb685b35be57af33c99a3b8a5c66bca9",
+  "pose_fusion_matches": 244,
+  "videos": [
+    "A-5-1",
+    "B-5-3"
+  ],
+  "source_frame_range": [
+    6000,
+    6015
+  ]
+}

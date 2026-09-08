@@ -1,0 +1,90 @@
+experiment: BeePoseTrack-Y-Route-Best-DetPose-Decoupled
+data:
+  dataset_dir: /data/bee26/beeposetrack_y_20260827/datasets/y_unified_20260901_labelme5_a1_strict_v8_annotator01_val_03_test_detposemask
+  dataset_yaml: /data/bee26/beeposetrack_y_20260827/datasets/y_unified_20260901_labelme5_a1_strict_v8_annotator01_val_03_test_detposemask/bee_yolo_pose_strict.yaml
+  manifest: /data/bee26/beeposetrack_y_20260827/datasets/y_unified_20260901_labelme5_a1_strict_v8_annotator01_val_03_test_detposemask/dataset_manifest.jsonl
+  expected_splits: [train, val, test]
+  split_annotators:
+    train: ["004", "02", "05"]
+    val: ["01"]
+    test: ["03"]
+model:
+  base_scale: m
+  y1_yaml: /data/bee26/beeposetrack_y_20260827/configs/yolo26m_pose_p2_y1.yaml
+  y2_yaml: /data/bee26/beeposetrack_y_20260827/configs/yolo26m_pose_p2_y2_structure.yaml
+  route_yaml: /data/bee26/beeposetrack_y_20260827/configs/yolo26m_pose_p2_route_best.yaml
+  a1_checkpoint: /data/bee26/beeposetrack_y_20260827/runs_e_aligned/public_pretrain/public_yolo26m_seed2026_img960_eb16/weights/best.pt
+  input_size: 1280
+  clip_len: 5
+  temporal_strides: [1, 2, 4]
+  max_det: 768
+  kpt_shape: [2, 3]
+  use_p2: true
+  use_rep_tdc: true
+  use_frequency_gate: true
+  use_domain_experts: true
+  use_density_head: true
+  pose_aware_nms: true
+training:
+  seed: 2026
+  device: "1"
+  batch: 2
+  nbs: 16
+  workers: 4
+  optimizer: MuSGD
+  lr0: 0.01
+  momentum: 0.9
+  weight_decay: 0.0005
+  amp: true
+  grad_clip: 10.0
+  warmup_epochs: 10
+  patience: 20
+  run_suffix: strict_v8_detposemask_decoupled
+  y0_epochs: 40
+  y0_patience: 10
+  y1_epochs: 100
+  y1_patience: 20
+  y2_epochs: 40
+  y2_patience: 12
+  y3_epochs: 60
+  y3_patience: 16
+  y5_epochs: 30
+  y5_patience: 8
+  y5_lr_scale: 0.1
+augmentation:
+  close_mosaic: 20
+  mosaic: 0.0
+  mixup: 0.0
+  copy_paste: 0.0
+  cutmix: 0.0
+  erasing: 0.0
+  degrees: 10.0
+  translate: 0.10
+  scale: 0.30
+  fliplr: 0.5
+  flipud: 0.0
+loss:
+  rle: 1.0
+  oks: 1.0
+  visibility: 0.5
+  axis: 0.5
+  inside: 0.2
+  length: 0.2
+  track: 0.1
+  density: 0.1
+  prototype: 0.05
+tracking:
+  max_age: 3
+  max_cost: 1.35
+  max_center_dist: 140.0
+  max_candidates_per_frame: 384
+  max_new_tracks_per_frame: 384
+  max_active_tracks: 512
+  hungarian_limit: 384
+eval:
+  five_frame: true
+  candidate_conf: 0.001
+  conf: 0.25
+  iou: 0.7
+  pose_iou: 0.3
+  pr_iou: 0.5

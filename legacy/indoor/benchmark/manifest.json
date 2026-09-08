@@ -1,0 +1,330 @@
+{
+  "type": "human_annotations",
+  "train_excluded": true,
+  "samples": [
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_01/B-5-1_frame_000615.json",
+      "annotation_sha256": "dacbdb1cb9a1f1081b6fbdc30c41245730e10e0759659607ed87a4d1b99ec04a",
+      "image_filename": "B-5-1_frame_000615.jpg",
+      "image_sha256": "b6adfb62d3c34d80a1c7165df35eb3da2bf302c4fd602e1bfd8f4b3bdd41e5f1",
+      "source_boxes": 451
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-1",
+      "annotation": "calibration/标注员_01/B-5-1_frame_000640.json",
+      "annotation_sha256": "9cec07bfae9c1041bd0b918f9f4e576aaf257e165a6804fc14aedd9230b0b48f",
+      "image_filename": "B-5-1_frame_000640.jpg",
+      "image_sha256": "bc0553a82054e1da484db809a21958bc8e276449c1a6fa636c19b65f9aa76db1",
+      "source_boxes": 459
+    },
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_01/B-5-1_frame_000665.json",
+      "annotation_sha256": "03772792df85cd8678f6833cd9e1d71497ceb16c305de1c713f06e4907778599",
+      "image_filename": "B-5-1_frame_000665.jpg",
+      "image_sha256": "ae7b77d8845cc7d36ed683ce474061e833a6dabaee4497fdfcec6e43621615d7",
+      "source_boxes": 448
+    },
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_02/B-5-1_frame_004470.json",
+      "annotation_sha256": "cf2af5c8ea3ae026266bb5e44b0e53600a69b2e6ceb1943e98be37827d715be2",
+      "image_filename": "B-5-1_frame_004470.jpg",
+      "image_sha256": "b06a1b7b2de5abcb7f7508b4ca2195f5c1a433667bc148734886d1b515f6de53",
+      "source_boxes": 454
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-1",
+      "annotation": "calibration/标注员_02/B-5-1_frame_004495.json",
+      "annotation_sha256": "1adcfc00882a80543dccb645b56d3ee34d81bcdb2f513a42e11c71740e1f5f3c",
+      "image_filename": "B-5-1_frame_004495.jpg",
+      "image_sha256": "cbfe81a0675e70bdc223e0aeba5d02cd62f74a31638559cad286e35d96117762",
+      "source_boxes": 455
+    },
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_02/B-5-1_frame_004520.json",
+      "annotation_sha256": "6f8f712b6ff754e61ff56a453d5b0ea8e391a384dec59b58f450dd902b0d693e",
+      "image_filename": "B-5-1_frame_004520.jpg",
+      "image_sha256": "23d74011a1bddbc446ae5b99f6120bed42e68b9350fde6ddd36e1ea83e071ee5",
+      "source_boxes": 469
+    },
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_03/B-5-1_frame_008325.json",
+      "annotation_sha256": "43a49b5e20382d22c77cfaa7f7706cda843ab82406ad03666b617f544323401f",
+      "image_filename": "B-5-1_frame_008325.jpg",
+      "image_sha256": "ba21899f19829a600c578091b06b287e0fe5062c0361ff62111b3fcd97442f39",
+      "source_boxes": 427
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-1",
+      "annotation": "calibration/标注员_03/B-5-1_frame_008350.json",
+      "annotation_sha256": "14ec3e2ba5235b8c642a9d7d6feeb852b095f9af100cf0c28d6827ca39073781",
+      "image_filename": "B-5-1_frame_008350.jpg",
+      "image_sha256": "a5a7d0a62579da2d455ce1c479f7d7351323c54284354cf14ed633836f32c11d",
+      "source_boxes": 431
+    },
+    {
+      "split": "test",
+      "video": "B-5-1",
+      "annotation": "test/标注员_03/B-5-1_frame_008375.json",
+      "annotation_sha256": "7c76923572c30482a79c387955d03e06cdd01ebd1795f2c41f3132d9b07c4591",
+      "image_filename": "B-5-1_frame_008375.jpg",
+      "image_sha256": "d52aa951b57ebe24aefbbc31f269ac8bdbac29d9e96c0b073021c3c8db2bc9e9",
+      "source_boxes": 429
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_02/B-5-2_frame_000615.json",
+      "annotation_sha256": "da98e75d7a3727e01491cd8062716256fb1b565b608617545eff98ed13435266",
+      "image_filename": "B-5-2_frame_000615.jpg",
+      "image_sha256": "28553a41b1421717f67316143208c1f37bf11559605f195b919b3136ad4130fd",
+      "source_boxes": 218
+    },
+    {
+      "split": "test",
+      "video": "B-5-2",
+      "annotation": "test/标注员_02/B-5-2_frame_000640.json",
+      "annotation_sha256": "e914382f8ea1e5958e92aa0c50db93d4b07ca07ac2db1ace6e7cf7479ef6dc24",
+      "image_filename": "B-5-2_frame_000640.jpg",
+      "image_sha256": "c1d61ec7d17becb3bc49c0b5e7922d07648cd9391a5d6445208816c96efd97eb",
+      "source_boxes": 218
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_02/B-5-2_frame_000665.json",
+      "annotation_sha256": "7518914f276a614c97ff0409e5965db079cfa791c75ac7188aa86f140ffb4ac2",
+      "image_filename": "B-5-2_frame_000665.jpg",
+      "image_sha256": "db3f967a97254d05042e9535961909d78584ca3ac78bd930002405652b7a9272",
+      "source_boxes": 218
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_03/B-5-2_frame_004470.json",
+      "annotation_sha256": "cfc28b417297bcb28e80d1b96dade63f899fa04339fbf5adcb02b22804fcf923",
+      "image_filename": "B-5-2_frame_004470.jpg",
+      "image_sha256": "cd8a25fc21636ef69b6acc304911ad015fb92530f3252b469d88d62bb788df59",
+      "source_boxes": 222
+    },
+    {
+      "split": "test",
+      "video": "B-5-2",
+      "annotation": "test/标注员_03/B-5-2_frame_004495.json",
+      "annotation_sha256": "36f1de621c274165d2d6f21bb0e6c9084ed9f9f58c50a423c5132ea703a014bd",
+      "image_filename": "B-5-2_frame_004495.jpg",
+      "image_sha256": "5583ea32b35080bd0d077c4f9555d018e95cf94963df7bedf79835a02cdcd0c8",
+      "source_boxes": 229
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_03/B-5-2_frame_004520.json",
+      "annotation_sha256": "bc29e64a7ec057a00d7a1a0d8dfc4f7593c4b619d32f3ebc56b1971b9c25fd63",
+      "image_filename": "B-5-2_frame_004520.jpg",
+      "image_sha256": "408bddb2635181307119a58e0263464966e07002852f526d34e2d792aaea8135",
+      "source_boxes": 230
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_01/B-5-2_frame_008325.json",
+      "annotation_sha256": "ccb38d766666e45bcf300e1039fe3cacac64ecbe75c188ce25fb1a3dbce24701",
+      "image_filename": "B-5-2_frame_008325.jpg",
+      "image_sha256": "84632ff987e3d2f46ef0047f9f4399b108d2fa615203c8f534f91f6adc3ae659",
+      "source_boxes": 224
+    },
+    {
+      "split": "test",
+      "video": "B-5-2",
+      "annotation": "test/标注员_01/B-5-2_frame_008350.json",
+      "annotation_sha256": "59419d64ce5ccf76ac84fa11e0b08554677dbc9513525d18c68d9fa89687b6d9",
+      "image_filename": "B-5-2_frame_008350.jpg",
+      "image_sha256": "a59ebe478c38315b3a1195f01bbbd654970e1921e092c4d991b8d9b59ab95b74",
+      "source_boxes": 222
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-2",
+      "annotation": "calibration/标注员_01/B-5-2_frame_008375.json",
+      "annotation_sha256": "c983a9341ca19531530c382f9ca113194ff2d4093e747531255b93be741e4548",
+      "image_filename": "B-5-2_frame_008375.jpg",
+      "image_sha256": "62fd058f9906d86f5748066f16b29c9a57ad3e98fee1e2748ff0894413cff67c",
+      "source_boxes": 222
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_03/B-5-3_frame_000615.json",
+      "annotation_sha256": "d948d11e48db0b5ec486cd6bd411153fe424f48e34328ec3ad76535677d5688d",
+      "image_filename": "B-5-3_frame_000615.jpg",
+      "image_sha256": "bc4812ead07e4543951ed0834ba817b7c6ea28768a3f4f9137ccd0926de59b15",
+      "source_boxes": 432
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-3",
+      "annotation": "calibration/标注员_03/B-5-3_frame_000640.json",
+      "annotation_sha256": "9656c9803dcc7a58225f9aab7a8cb77b5ab65be15a964baca91bc46627b2f918",
+      "image_filename": "B-5-3_frame_000640.jpg",
+      "image_sha256": "eb72642cfef500fcf0503460291adb7b80e0a66c558fc746e5bbd5ada5799447",
+      "source_boxes": 395
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_03/B-5-3_frame_000665.json",
+      "annotation_sha256": "a48ead0240377c0b417ba03e2c2791d851cc5ea46d7f1bca5348f335a7261cbd",
+      "image_filename": "B-5-3_frame_000665.jpg",
+      "image_sha256": "716e0546e21dd01a1045c4af77de0a9f9c38d2e2534e844134c129ea6395c3c7",
+      "source_boxes": 402
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_01/B-5-3_frame_004475.json",
+      "annotation_sha256": "92ab0573da6850bf29301fa21b5b595027e1fba293904d2718cf64c1fe675a5f",
+      "image_filename": "B-5-3_frame_004475.jpg",
+      "image_sha256": "6cb7e057c0347ca6d32507281db63c4d2b8681803384c26cbd477de47f999cbd",
+      "source_boxes": 492
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-3",
+      "annotation": "calibration/标注员_01/B-5-3_frame_004500.json",
+      "annotation_sha256": "f780875c85a2fe6533fa13976120b9238dbb017fdd3792640180d39485dad74b",
+      "image_filename": "B-5-3_frame_004500.jpg",
+      "image_sha256": "8d640cf8cd493c459cc28281cdf73a6b2ef78013385e66db00bec13790e8f8bd",
+      "source_boxes": 488
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_01/B-5-3_frame_004525.json",
+      "annotation_sha256": "239f58134a1fbe103934d327514d8a3cd427df5850b6c522f6c8cfbb14d394d8",
+      "image_filename": "B-5-3_frame_004525.jpg",
+      "image_sha256": "8316ea39d9b05068cfc68e740ae301590e3594db6ba78b535a8e437fc3401d7d",
+      "source_boxes": 469
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_02/B-5-3_frame_008340.json",
+      "annotation_sha256": "fde33eabfec7203b0f6f982dda4cac66c21f51fdc2c87b9fec8db4ff66a556bc",
+      "image_filename": "B-5-3_frame_008340.jpg",
+      "image_sha256": "ae553cae73ca3d7b3db8c2768cc9f934a130881dc4f9828c8bd1808ce515d0fe",
+      "source_boxes": 390
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-3",
+      "annotation": "calibration/标注员_02/B-5-3_frame_008365.json",
+      "annotation_sha256": "a2eb6b35893b484d0f96603c3cea28970dba38f7c2750cb226ed522466c5c560",
+      "image_filename": "B-5-3_frame_008365.jpg",
+      "image_sha256": "d3e4b483bf2c09d45f06b7597936f85185da37851748c8a5ccc919f426f1c8f8",
+      "source_boxes": 390
+    },
+    {
+      "split": "test",
+      "video": "B-5-3",
+      "annotation": "test/标注员_02/B-5-3_frame_008390.json",
+      "annotation_sha256": "91fa5b548dff7e8be113c007b71eea0fec3b80667c68473b4e1c60296f5d6e86",
+      "image_filename": "B-5-3_frame_008390.jpg",
+      "image_sha256": "619eddfb306dbc3736853b3ff6a4dc39c3aee70da373916cbbaa59a91de6f333",
+      "source_boxes": 416
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_01/B-5-4_frame_000615.json",
+      "annotation_sha256": "2345df510aea311b7a511e890f39b3943e4fd326f98c0664e18ff0b11a8cbbc0",
+      "image_filename": "B-5-4_frame_000615.jpg",
+      "image_sha256": "f6976f886f1cfebc71d42e0081384c99d4a3f4a7a9c27aa62a3f5d586511235d",
+      "source_boxes": 370
+    },
+    {
+      "split": "test",
+      "video": "B-5-4",
+      "annotation": "test/标注员_01/B-5-4_frame_000640.json",
+      "annotation_sha256": "525b5c1a722a0881b6e661e194702279da9e77d0f6db3f9395d9e825e46242a1",
+      "image_filename": "B-5-4_frame_000640.jpg",
+      "image_sha256": "ca90379ed9ddb759af190415a4d90ae58e333d02a5aac43ad98de5a1f1145054",
+      "source_boxes": 369
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_01/B-5-4_frame_000665.json",
+      "annotation_sha256": "66aac740dd8b8dc650e313bf4c8f126eeee7034d43547e52661fbf787c22b41a",
+      "image_filename": "B-5-4_frame_000665.jpg",
+      "image_sha256": "b4008b60485ebd935a19433ee5a9c32f13790d864a735b08120114ff46dc6134",
+      "source_boxes": 369
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_02/B-5-4_frame_004470.json",
+      "annotation_sha256": "18b1279673d7436514170165bf6c0f96d4720d959f5b13a3ccedef4db33ef35f",
+      "image_filename": "B-5-4_frame_004470.jpg",
+      "image_sha256": "45ddde13be203cf581c215df4f53a4841101e3b7ce9ebe285d2f54f9eda1ebf2",
+      "source_boxes": 362
+    },
+    {
+      "split": "test",
+      "video": "B-5-4",
+      "annotation": "test/标注员_02/B-5-4_frame_004495.json",
+      "annotation_sha256": "de6b9dc81800f0dacbaa6fcb7e2542f896328dd38675872c0b8c69d814ca0356",
+      "image_filename": "B-5-4_frame_004495.jpg",
+      "image_sha256": "0561681e9a41d2f8ec1fe48c7cef50b9afba4e54e3e3e0f9bfbaf4030a05a1f8",
+      "source_boxes": 361
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_02/B-5-4_frame_004520.json",
+      "annotation_sha256": "8861bd5bc4bc238de3d4dfb534caaf4c868af80a9e2061998ffa155967fb4e76",
+      "image_filename": "B-5-4_frame_004520.jpg",
+      "image_sha256": "f4e7a66a901cfeae73a145aa6165bd3524f7b3c5556f6702c33c24ce98ee7f6f",
+      "source_boxes": 362
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_03/B-5-4_frame_008330.json",
+      "annotation_sha256": "41c577757ae7e59389e6264601579aa98a83ee4b58cbfb03262a0a3277140e3b",
+      "image_filename": "B-5-4_frame_008330.jpg",
+      "image_sha256": "9314ee163b567b76e5f8d507db3b3b1b9e9b0ec353ac885b94e04ecbbe4c406a",
+      "source_boxes": 357
+    },
+    {
+      "split": "test",
+      "video": "B-5-4",
+      "annotation": "test/标注员_03/B-5-4_frame_008355.json",
+      "annotation_sha256": "ca659661d7c202299ff99e88f5e12beb972d2eaaaf40590f76ace78b1c74be07",
+      "image_filename": "B-5-4_frame_008355.jpg",
+      "image_sha256": "63c9f84979bd649708fc71021f65f32863f147c40a9bae916b3c609cfcdbf8bc",
+      "source_boxes": 353
+    },
+    {
+      "split": "calibration",
+      "video": "B-5-4",
+      "annotation": "calibration/标注员_03/B-5-4_frame_008380.json",
+      "annotation_sha256": "c6ca1a8ebebbbaf220285ee262fb2a790594186d417974fa8ee28b84a749c97b",
+      "image_filename": "B-5-4_frame_008380.jpg",
+      "image_sha256": "a7a56a59d6674a5ac761af18d522f44ff2c28cc478674953de3c3ac4829deec0",
+      "source_boxes": 351
+    }
+  ]
+}

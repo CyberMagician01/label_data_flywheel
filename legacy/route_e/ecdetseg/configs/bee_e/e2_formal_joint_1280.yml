@@ -1,0 +1,31 @@
+__include__: ['e1_formal_native_p2_q768_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2/e2_joint_1280
+epochs: 92
+freeze_backbone_epochs: 10
+backbone_unfreeze_layers_per_epoch: 2
+evaluation_profile: joint
+inline_eval: true
+
+pareto_metrics:
+  bbox_ap: max
+  rgb_ap: max
+  ir_ap: max
+  pose_pck10: max
+  pose_nme: min
+  orientation_accuracy: max
+  head_tail_swap_rate: min
+  query_utilization: max
+
+ECTransformer:
+  num_keypoints: 2
+  endpoint_decoder_type: decomposed
+  endpoint_sampling_points: 8
+
+ECCriterion:
+  losses: ['mal', 'boxes', 'local', 'pose']
+
+train_dataloader:
+  dataset:
+    transforms:
+      stop_epoch: 90

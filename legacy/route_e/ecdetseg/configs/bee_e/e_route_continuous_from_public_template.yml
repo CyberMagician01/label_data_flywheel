@@ -1,0 +1,17 @@
+__include__: ['e_route_continuous_1280.yml']
+
+output_dir: /data/bee26/beeposetrack_e_route_v5_unified_20260901/work_dirs/e_route_continuous_from_public_1280_seed2026
+inline_eval: true
+external_eval: {enabled: false}
+
+bee_e_initialization:
+  source: public_bee_preadaptation
+  selected_scale: M
+  selection_evidence: /data/bee26/beeposetrack_e_route_v5_unified_20260901/evidence/official_ecdet_m_coco_selection.json
+  selection_evidence_sha256: ed849b66fd2b38fc2d3c273b36c3e982bebe6712be05faa543f26036039845dd
+  checkpoint: PUBLIC_SELECTED_CHECKPOINT
+  sha256: PUBLIC_SELECTED_SHA256
+  reinitialize_output_heads: []
+  public_preadaptation_evidence: PUBLIC_PREADAPTATION_EVIDENCE
+  public_preadaptation_evidence_sha256: PUBLIC_PREADAPTATION_EVIDENCE_SHA256
+

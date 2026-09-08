@@ -1,0 +1,21 @@
+__include__: ['e1_formal_native_p2_q768_1280.yml']
+
+# Short end-to-end check only. It verifies the formal data-iteration LR clock,
+# gradient accumulation, current schema and 1280/native-P2 forward/backward.
+output_dir: /data/bee26/beeposetrack_e_20260827/work_dirs/e_formal_v2_smoke/latest03_e1_lr
+epochs: 2
+warmup_iter: 4
+grad_accum_steps: 2
+min_effective_batch_size: 4
+freeze_backbone_epochs: 0
+log_gradient_conflicts_every: 0
+
+train_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/train_13_smoke_schema_v2.json
+    transforms:
+      stop_epoch: 2
+
+val_dataloader:
+  dataset:
+    ann_file: /data/bee26/beeposetrack_e_20260827/outputs/bee_e_schema_v2_latest03_detposefix_trackfix_20260830/train_13_smoke_schema_v2.json
