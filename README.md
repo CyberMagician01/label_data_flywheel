@@ -35,7 +35,8 @@ flowchart LR
 | 旧 Y 路线及全部自定义模型 | [legacy/route_y](legacy/route_y) |
 | ViTPose / CountAnything / CountGD++ 历史实验 | [legacy/server_experiments](legacy/server_experiments) |
 | 文档功能对应实现 | [docs/功能与验证.md](docs/功能与验证.md) |
-| 学术方案与实验边界 | [docs/Hive_Q2K_Dual_方法.md](docs/Hive_Q2K_Dual_方法.md) |
+| 学术方法正文（不插实验图，保留方法流程图） | [Hive-Q²K Dual 方法](docs/Hive_Q2K_Dual_方法.md) |
+| 同一正文的室内实验配图版（检测、补框与跟踪） | [室内实验配图版](docs/Hive_Q2K_Dual_方法_室内实验配图.md) |
 | 群体行为与蜂学一手文献、实测及使用 | [docs/群体行为与蜂学研究.md](docs/群体行为与蜂学研究.md) |
 
 ## 安装和使用
