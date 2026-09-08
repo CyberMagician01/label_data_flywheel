@@ -1,6 +1,6 @@
 # label_data_flywheel
 
-**室内红外与室外 RGB 蜜蜂标注的数据飞轮。** 保留经过筛选的检测、姿态、密度与追踪方案，补齐质量校准、统计采样、行为证据、人工复核和训练数据回流。
+**室内红外与室外 RGB 蜜蜂标注的数据飞轮。** 保留经过筛选的检测、姿态、密度与追踪方案，以实体一致性质量、群体视频观测和源帧复核组织现有标注。
 
 **范围只限数据飞轮模块。** 赛事文件中的标注格式、划分、复核、来源和抽帧复现要求在此落实；四 EXE、ONNX、Windows 离线打包及完整参赛材料由其他模块负责，不作为飞轮完成标准。见 [范围与数据规范](docs/数据飞轮范围与数据规范.md)。
 
@@ -8,15 +8,15 @@
 
 ```mermaid
 flowchart LR
-  A[室内 YOLO + 关键点 + 动态密度] --> C[统一实体与源帧协议]
+  A[室内 YOLO + 姿态 + 动态密度] --> C[统一实体与源帧]
   B[室外 SAM2.1 + 检测吸附 + 姿态] --> C
-  C --> D[Q² / 多专家校准 / 跨层校验]
-  C --> E[轨迹与 BEEG 行为证据]
-  D --> F[预算约束人工复核]
-  E --> F
-  F --> G[分布校准与不可变训练快照]
-  G --> H[E 路线六阶段训练 / 保留 Y 路线]
-  H --> I[固定协议评测与版本选择]
+  C --> D[身份关联 / 插值可见性]
+  D --> E[Q² 一致性质量]
+  D --> F[直接观测的数量 / 密度 / 运动 / 近邻]
+  E --> G[实体复核候选]
+  F --> H[时间窗变化候选]
+  G --> I[源帧回看与标注整理]
+  H --> I
   I --> C
 ```
 
@@ -24,14 +24,14 @@ flowchart LR
 
 | 需要做什么 | 入口 |
 |---|---|
-| 完整运行一轮飞轮 | `bee-flywheel round --config ... --output ...` |
-| 群体通量、热图、时间网络与蜂学解释 | `bee-flywheel colony --config configs/colony.example.json --output 新目录` |
+| 运行标注整理与复核候选生成 | `bee-flywheel round --config ... --output ...` |
+| 数量、热图、近邻网络与纯视频变化复核 | `bee-flywheel colony --config configs/colony.example.json --output 新目录` |
 | 导出、校验标准标注包 | `bee-flywheel export-annotations` / `validate-annotations` |
 | 当前最优室内全量 ID 方案 | [legacy/indoor/run_appearance20.py](legacy/indoor/run_appearance20.py) |
 | 室外原版 SAM2.1 与几何吸附 | [legacy/outdoor](legacy/outdoor) |
 | 关键点、YOLO、密度推理 | [tools/infer_models.py](tools/infer_models.py) |
-| 双域六阶段训练 | [E 路线](legacy/route_e/ecdetseg/configs/bee_e/e_route_continuous_1280.yml) |
-| 把新快照绑定到 E 训练器 | [tools/prepare_e_round.py](tools/prepare_e_round.py) |
+| 历史研究：六阶段训练配置 | [E 路线](legacy/route_e/ecdetseg/configs/bee_e/e_route_continuous_1280.yml) |
+| 开发接口：快照绑定到 E 训练器 | [tools/prepare_e_round.py](tools/prepare_e_round.py) |
 | 旧 Y 路线及全部自定义模型 | [legacy/route_y](legacy/route_y) |
 | ViTPose / CountAnything / CountGD++ 历史实验 | [legacy/server_experiments](legacy/server_experiments) |
 | 文档功能对应实现 | [docs/功能与验证.md](docs/功能与验证.md) |
@@ -55,7 +55,7 @@ bee-flywheel --help
 bee-flywheel round --config configs/round.example.json --output /data/bee26/flywheel_rounds/round_001
 ```
 
-输出包括统一标注、质量证据、ErrorCube、行为图、复核队列、下轮策略、采样计划和训练快照。`review_decisions` 可接入上一轮的人工决定；`candidate_evidence` 和 `expert_calibration` 可接入完成校准的专家结果。`pose_sources` 把已有同帧关键点与 SAM 轨迹对齐。
+默认输出统一标注、质量证据、ErrorCube、行为观测与复核队列。采样计划和训练快照由相应配置启用。`review_decisions` 可接入上一轮的人工决定；`candidate_evidence` 和 `expert_calibration` 可接入完成校准的专家结果。`pose_sources` 把已有同帧关键点与 SAM 轨迹对齐。
 
 ```bash
 # 先验证具体模型命令；去掉 --dry-run 即实际执行。
@@ -82,6 +82,12 @@ bee-flywheel evaluate --gt /data/bee26/gt.jsonl --input /data/bee26/pred.jsonl \
 这是实际选定配置，不把早期讨论过的每个参数都混入最终版本。30 FPS 下 90 帧对应 3 秒。
 
 旧发布保留在私有 [ModelScope 数据集 poloso/yolo_indoor](https://modelscope.cn/datasets/poloso/yolo_indoor)，当前室内选择指向 `versions/v4_indoor_appearance_iomin20_20260908/`。GitHub 保存代码、已有 benchmark 和验证摘要；完整预测、视频帧、权重仍留在原服务器与私有数据集。
+
+## 本轮范围修订
+
+学术正文和流程图仅叙述已完成的视觉标注、实体修正、质量整理与视频分析。环境信息未提供，默认群体入口改用纯视频证据；六阶段训练、多专家校准和知识更新保留为开发组件，未列入当前方法成果。
+
+已修正行为入口将插值框计入观测的问题：双域 32 帧的累计观测由 8,319 调整为 6,587，原标注内容相同。3090 上 A-5-1 的 5,400 帧分析得到 18 个时间窗和 1 个数量变化候选，定位源帧 6900—7199。见 [本轮验证](evidence/video_only_revision.json)。
 
 ## 实际验证
 

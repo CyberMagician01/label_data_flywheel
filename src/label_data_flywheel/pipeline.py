@@ -184,9 +184,7 @@ def run_round(config, output):
             ),
             colony_config.get("analysis", {}),
         )
-        colony_report["apiculture"] = interpret_colony(
-            colony_report, colony_config.get("context_records", [])
-        )
+        colony_report["apiculture"] = interpret_colony(colony_report)
         if colony_config.get("review_decisions"):
             from .apiculture import review_colony
 

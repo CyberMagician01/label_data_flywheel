@@ -343,10 +343,11 @@ def analyze_colony(frames, config=None):
             w["first_frame"] = f
         w["last_frame"], w["n"] = f, w["n"] + 1
         w["exposure"] += 1 / fps
-        ds = [d for d in frame["detections"] if not is_fill(d)]
+        valid = [d for d in frame["detections"] if d.get("label_status") != "invalid"]
+        ds = [d for d in valid if not is_fill(d)]
         w["counts"].append(len(ds))
         w["objects"] += len(ds)
-        w["fills"] += len(frame["detections"]) - len(ds)
+        w["fills"] += sum(is_fill(d) for d in valid)
         w["hidden"] += len(frame.get("temporarily_hidden_detections", []))
         points, lengths, tracks = [], [], []
         all_points = [np.clip(center(d) / size, 0, 1) for d in ds]

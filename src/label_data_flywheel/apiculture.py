@@ -1,4 +1,4 @@
-"""有出处、有输入门槛的养蜂复核建议；输出从不作为疾病或行为真值。"""
+"""以视频中实际可测的变化组织群体复核。"""
 
 from importlib.resources import files
 import json
@@ -14,7 +14,66 @@ def literature():
     )
 
 
-def interpret_colony(report, context_records=None):
+def interpret_colony(report):
+    """默认路径只使用视频指标；每个候选附上源帧、基线和可测条件。"""
+    metric_names = {
+        "mean_observed_count": "观测数量",
+        "active_fraction": "活动比例",
+        "median_speed_bl_proxy_s": "中位移动速度",
+        "density_cv": "空间密度不均匀程度",
+    }
+    findings, queue = [], []
+    for scope in report["scopes"]:
+        key = (scope["domain"], scope["video"], scope["group"])
+        changes = scope["temporal"]["change_candidates"]
+        for window in scope["windows"]:
+            candidates = [c for c in changes if c["window_index"] == window["index"]]
+            if not candidates:
+                continue
+            accepted = []
+            for candidate in candidates:
+                metric = candidate["metric"]
+                measurable = window["coverage"] >= report["config"]["min_window_coverage"]
+                if metric in ("active_fraction", "median_speed_bl_proxy_s"):
+                    measurable = measurable and window["motion_observable_fraction"] >= 0.5
+                delta = candidate["value"] - candidate.get("baseline_median", candidate["value"])
+                finding = {
+                    "domain": key[0], "video": key[1], "group": key[2],
+                    "window_index": window["index"],
+                    "source_frame_range": [window["first_frame"], window["last_frame"]],
+                    "title": metric_names.get(metric, metric) + ("上升" if delta > 0 else "下降" if delta < 0 else "变化"),
+                    "status": "visual_change" if measurable else "observability_check",
+                    "metric": metric, "value": candidate["value"],
+                    "baseline_median": candidate.get("baseline_median"),
+                    "robust_z": candidate.get("robust_z"),
+                    "frame_coverage": window["coverage"],
+                    "motion_observable_fraction": window["motion_observable_fraction"],
+                    "evidence_source": "video_observations",
+                }
+                findings.append(finding)
+                accepted.append(finding)
+            queue.append({
+                "sample_id": f"{key[0]}/{key[2]}/{key[1]}/{window['first_frame']:08d}",
+                "event_id": f"{key[0]}/{key[2]}/{key[1]}/colony/{window['first_frame']}-{window['last_frame']}",
+                "layer": "L4", "domain": key[0], "video": key[1], "group": key[2],
+                "source_frame_range": [window["first_frame"], window["last_frame"]],
+                "window_index": window["index"], "status": "unconfirmed",
+                "reason": "colony_temporal_change" if any(f["status"] == "visual_change" for f in accepted) else "colony_observability_check",
+                "review_priority": max(abs(f["robust_z"] or 0) for f in accepted),
+                "events": candidates,
+                "visual_findings": accepted,
+                "review_instruction": "回看对应源帧，核对数量、运动和空间分布的变化，并检查重复框、漏检及身份连接。",
+            })
+    queue.sort(key=lambda r: (-r["review_priority"], r["event_id"]))
+    cards = json.loads(files("label_data_flywheel").joinpath("assets/visual_knowledge.json").read_text(encoding="utf-8"))
+    return {
+        "mode": "video_only", "literature": cards,
+        "interpretations": findings, "review_queue": queue,
+        "evidence_source": "video_observations",
+    }
+
+
+def interpret_external_context(report, context_records=None):
     """外部证据必须有来源、作用域和源时间窗，不跨蜂箱/视频拼接。"""
     records = context_records or []
     conclusions, queue = [], []

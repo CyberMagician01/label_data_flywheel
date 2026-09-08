@@ -92,10 +92,7 @@ def run_colony(config, output):
             "io.py",
         )
     }
-    context = config.get("context_records", [])
-    if isinstance(context, str):
-        context = read_json(context)
-    report["apiculture"] = interpret_colony(report, context)
+    report["apiculture"] = interpret_colony(report)
     write_json(out / "colony.json", report)
     write_json(out / "review_queue.json", report["apiculture"]["review_queue"])
     write_json(out / "resolved_config.json", config)

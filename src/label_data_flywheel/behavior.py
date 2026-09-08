@@ -4,6 +4,7 @@ from collections import defaultdict
 import math
 import numpy as np
 from .geometry import center, pose, wrap
+from .postprocess import is_fill
 
 
 def calibrate_motion(speeds):
@@ -46,6 +47,14 @@ def oscillation(rows, min_frames=30):
 
 def analyze(frames, config=None):
     cfg = config or {}
+    # 插值维持身份联系；运动、计数与关系使用直接观测，保留输入原样。
+    frames = [
+        {**f, "detections": [
+            d for d in f["detections"]
+            if not is_fill(d) and d.get("label_status") != "invalid"
+        ]}
+        for f in frames
+    ]
     thresholds = cfg.get("motion", {"stationary": 0.01, "fast": 0.2})
     min_duration = cfg.get("min_duration_source_frames", 5)
     max_gap = cfg.get("max_observation_gap", 10)

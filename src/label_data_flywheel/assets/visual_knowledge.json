@@ -1,0 +1,8 @@
+{
+  "version": "video_only_20260908",
+  "cards": [
+    {"id":"individual_observation","title":"个体观测与蜂群空间组织","source_title":"Markerless tracking of an entire honey bee colony","year":2021,"doi":"10.1038/s41467-021-21769-1","url":"https://www.nature.com/articles/s41467-021-21769-1","evidence":"位置、身体方向与连续身份共同支持个体分辨的蜂群观测。","observable":"观测数量、空间密度与轨迹联系","limitations":"累计轨迹编号数量与同一帧可见个体数量具有不同含义。"},
+    {"id":"pose_dynamics","title":"观测误差与运动变化","source_title":"Keypoint-MoSeq: parsing behavior by linking point tracking to pose dynamics","year":2024,"doi":"10.1038/s41592-024-02318-2","url":"https://www.nature.com/articles/s41592-024-02318-2","evidence":"姿态噪声会影响由视觉轨迹形成的行为描述。","observable":"位移速度、观测连续性与异常跳变","limitations":"运动量按实际可用观测计算；插值位置单独保存。"},
+    {"id":"spatial_relations","title":"朝向、间距与群体关系","source_title":"Flow-mediated olfactory communication in honeybee swarms","year":2021,"doi":"10.1073/pnas.2011916118","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC8020754/","evidence":"个体间距、身体朝向与具体行为能够共同描述群体组织。","observable":"持续近邻与局部姿态关系","limitations":"近邻网络表达空间关系；交互语义通过对应视频区段判读。"}
+  ]
+}

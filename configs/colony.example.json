@@ -16,7 +16,6 @@
     "change_mad_z": 4,
     "min_window_coverage": 0.9
   },
-  "context_records": [],
   "font_path": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
   "render": true
 }

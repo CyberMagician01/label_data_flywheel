@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import pytest
 from label_data_flywheel.colony import EntranceGate, analyze_colony, temporal_analysis
-from label_data_flywheel.apiculture import interpret_colony, literature
+from label_data_flywheel.apiculture import interpret_colony, interpret_external_context, literature
 from label_data_flywheel.io import normalize, write_json
 from label_data_flywheel.colony_runner import run_colony
 
@@ -112,7 +112,7 @@ def test_context_cannot_create_diagnosis_or_cross_video():
     r["scopes"][0]["temporal"]["change_candidates"] = [
         {"window_index": 0, "metric": "mean_observed_count", "value": 8}
     ]
-    rows = interpret_colony(r)["interpretations"]
+    rows = interpret_external_context(r)["interpretations"]
     assert all(
         x["status"] == "insufficient_evidence" and x["diagnosis"] is None for x in rows
     )
@@ -126,12 +126,12 @@ def test_context_cannot_create_diagnosis_or_cross_video():
     }
     assert all(
         x["status"] == "insufficient_evidence"
-        for x in interpret_colony(r, [context])["interpretations"]
+        for x in interpret_external_context(r, [context])["interpretations"]
     )
     context["video"] = "v"
     pesticide = next(
         x
-        for x in interpret_colony(r, [context])["interpretations"]
+        for x in interpret_external_context(r, [context])["interpretations"]
         if x["scenario"] == "pesticide"
     )
     assert pesticide["status"] == "review_candidate" and pesticide["diagnosis"] is None
@@ -229,7 +229,7 @@ def test_colony_round_writes_reviewable_evidence(tmp_path):
     from label_data_flywheel.io import read_json
 
     assert (
-        len(read_json(tmp_path / "out/knowledge_graph.json")["literature_cards"]) == 7
+        len(read_json(tmp_path / "out/knowledge_graph.json")["literature_cards"]) == 3
     )
 
 
@@ -278,7 +278,8 @@ def test_group_reviews_are_named_idempotent_and_separate_from_instances():
 
     r = analyze_colony([frame(i, [bee()]) for i in range(40)])
     r["scopes"][0]["temporal"]["change_candidates"] = [
-        {"window_index": 0, "metric": "mean_observed_count"}
+        {"window_index": 0, "metric": "mean_observed_count", "value": 1,
+         "baseline_median": 0, "robust_z": 4}
     ]
     r["apiculture"] = interpret_colony(r)
     eid = r["apiculture"]["review_queue"][0]["event_id"]

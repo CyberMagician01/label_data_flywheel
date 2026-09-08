@@ -1,0 +1,101 @@
+{
+  "date": "2026-09-08",
+  "server": "3090",
+  "scope": "Existing annotation analysis; no training or annotation replacement",
+  "real_32_frame_revision": {
+    "frames": 32,
+    "old_behavior_count": 8319,
+    "new_behavior_count": 6587,
+    "visible_detections": 8319,
+    "direct_observations": 6587,
+    "visible_interpolations": 1732,
+    "annotations_content_unchanged": true,
+    "output": "/data/bee26/label_data_flywheel_integration_20260908/video_evidence_revision_20260908/real_clip_round",
+    "behavior_implementation_sha256": "5fec4530973c47a4eb486f06432150aae7f17c1d862918e6109da1d23062a28c"
+  },
+  "video_only_colony": {
+    "scopes": 1,
+    "frames": 5400,
+    "windows": 18,
+    "review_candidates": 1,
+    "output": "/data/bee26/label_data_flywheel_integration_20260908/video_evidence_revision_20260908/A-5-1_video_only_verified",
+    "elapsed_seconds": 11.205761478000568,
+    "video": "A-5-1",
+    "source_frame_range": [
+      1800,
+      7199
+    ],
+    "fps": 30.0,
+    "unique_track_ids": 0,
+    "mean_observed_count": 17.20722222222222,
+    "max_density_conservation_error": 7.185324335523546e-09,
+    "findings": [
+      {
+        "domain": "RGB_out",
+        "video": "A-5-1",
+        "group": "all_prediction",
+        "window_index": 17,
+        "source_frame_range": [
+          6900,
+          7199
+        ],
+        "title": "观测数量上升",
+        "status": "visual_change",
+        "metric": "mean_observed_count",
+        "value": 22.653333333333332,
+        "baseline_median": 17.28333333333333,
+        "robust_z": 6.214079074252653,
+        "frame_coverage": 0.9999999999999976,
+        "motion_observable_fraction": 0.0,
+        "evidence_source": "video_observations"
+      }
+    ],
+    "source_receipts": [
+      {
+        "input": {
+          "path": "/data/bee26/datasets/flywheel_outdoor_pose_labels_postprocessed_20260903/A-5-1/frames",
+          "video": "A-5-1",
+          "domain": "RGB_out",
+          "group": "all_prediction",
+          "source": "prediction",
+          "source_frame_range": [
+            1800,
+            7199
+          ]
+        },
+        "selected_frames": 5400,
+        "sha256": "007e9d7f586c2439b47c9f86006b6cb41947a5062d7aa1c14c913f2c62b57460",
+        "hash_definition": "有序文件名、NUL和文件字节的串联"
+      }
+    ],
+    "implementation_sha256": {
+      "colony.py": "e4d449e8918dfb68bab7274b5b7d38bb487661f5dcb010fa40cd75db2820c392",
+      "apiculture.py": "9732a59ee1356c9f72b36857d1f31084394f7b732a81edd65ea2ac9ab20fa30f",
+      "colony_runner.py": "32e9ce934d73d9058b990cf9f027d41f0052bc34770c64c8a3e837cf79885586",
+      "colony_report.py": "e498c199ff10ac89d3a7271ee391fdd644ee0ed59b8769a1c374fdfb7a429146",
+      "tracking.py": "3e9ca1821a41f1fff5424361a19b5870265789eef9743e3e070ec8a0fef4680a",
+      "io.py": "56591e8759a69a90895bfac3dc10b625eae95627ca0a71ff70d5979b65100538"
+    }
+  },
+  "targeted_tests": {
+    "passed": 28,
+    "server": "3090",
+    "files": [
+      "test_video_evidence.py",
+      "test_colony.py",
+      "test_flywheel.py"
+    ]
+  },
+  "presentation": {
+    "editable_slide_count": 1,
+    "filename": "BEE流程图_视频证据版.pptx",
+    "sha256": "611c10b695d503b1432b1fef39e6aaa98f01065c8cd5bc4302a8a8359f75fe06"
+  },
+  "manuscript": {
+    "path": "docs/Hive_Q2K_Dual_方法.md",
+    "display_equations": 11,
+    "inline_equations": 29,
+    "katex_errors": 0,
+    "references": 10
+  }
+}
