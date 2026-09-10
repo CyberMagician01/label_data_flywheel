@@ -4,6 +4,7 @@ import copy
 from collections import defaultdict
 import numpy as np
 from .geometry import overlap, center
+from .semantics import is_bee
 
 
 def is_fill(d):
@@ -30,13 +31,14 @@ def suppress_interpolation(frame, threshold=0.2, min_pixels=16):
     kept = list(obs)
     hidden = f.setdefault("temporarily_hidden_detections", [])
     for d in ins:
-        om, area, _ = overlap([d["bbox_xyxy"]], [x["bbox_xyxy"] for x in kept])
+        blockers = [x for x in kept if is_bee(x) and x.get("label_status") != "invalid"]
+        om, area, _ = overlap([d["bbox_xyxy"]], [x["bbox_xyxy"] for x in blockers])
         conflict = np.flatnonzero((om[0] >= threshold) & (area[0] >= min_pixels))
         if len(conflict):
             k = int(conflict[np.argmax(om[0, conflict])])
             d["suppression"] = {
                 "reason": "overlap",
-                "kept_id": kept[k].get("track_id"),
+                "kept_id": blockers[k].get("track_id"),
                 "iomin": float(om[0, k]),
                 "threshold": threshold,
             }
@@ -63,7 +65,8 @@ def interpolate(frames, max_gap=90):
         raise ValueError("一次插值只能处理同域同视频同群组")
     for f in result:
         for d in f["detections"]:
-            if d.get("track_id") is not None and not is_fill(d):
+            if (d.get("track_id") is not None and not is_fill(d) and is_bee(d)
+                    and d.get("label_status") != "invalid"):
                 tracks[d["track_id"]].append((f["frame"], d))
     occupied = {
         (f["frame"], d.get("track_id"))

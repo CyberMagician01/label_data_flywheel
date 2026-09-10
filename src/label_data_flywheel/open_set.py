@@ -86,6 +86,13 @@ class DDSClient:
             },
         )
 
+    def visual_from_memory(self, image, memory, domain, tags=(), limit=4):
+        references = select_prompts(memory, domain, tags, limit)
+        references += select_prompts(memory, domain, tags, limit, negative=True)
+        if not references:
+            raise ValueError("当前域没有已确认提示")
+        return self.visual(image, references)
+
     def text(self, image, text="bee"):
         return self.task(
             "/v2/task/grounding_dino/detection",

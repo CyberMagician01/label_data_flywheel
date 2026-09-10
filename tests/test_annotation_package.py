@@ -219,3 +219,29 @@ def test_extract_frames_source_index_and_unicode_path(tmp_path):
         assert abs(cv2.imdecode(data, cv2.IMREAD_COLOR).mean() - expected) < 3
     with pytest.raises(FileExistsError):
         extract(video, "A-5-1", manifest, out, 1)
+
+    # 默认解码全部源帧，不需要标注或清单，编号从 0 开始。
+    full = tmp_path / "全部帧"
+    result = extract(video, None, None, full, 0)
+    assert result["mode"] == "all_frames"
+    assert result["frames_written"] == 3
+    assert sorted(p.name for p in (full / "source").iterdir()) == [
+        f"frame_{i:08d}.jpg" for i in range(3)
+    ]
+    for i, gray in enumerate((40, 100, 180)):
+        data = np.frombuffer((full / f"source/frame_{i:08d}.jpg").read_bytes(), np.uint8)
+        image = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        assert image.shape == (16, 16, 3)
+        assert abs(image.mean() - gray) < 3
+
+    # 显式提供标注目录才启用选帧，保留原始编号而非重新编号。
+    labels = tmp_path / "labels" / "A-5-1"
+    labels.mkdir(parents=True)
+    for i in (0, 2):
+        (labels / f"frame_{i:08d}.txt").write_text("")
+    selected = tmp_path / "选帧"
+    result = extract(video, "A-5-1", None, selected, 0, annotations=labels.parent)
+    assert result["mode"] == "selected_frames"
+    assert sorted(p.name for p in (selected / "A-5-1").iterdir()) == [
+        "frame_00000000.jpg", "frame_00000002.jpg"
+    ]

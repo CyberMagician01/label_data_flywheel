@@ -1,0 +1,18 @@
+{
+  "workspace_root": "../../../../output/outdoor_id_only",
+  "extracted_root": "../../../../data/extracted",
+  "sequences": {
+    "A-5-1": {
+      "frames": 8997
+    },
+    "A-5-2": {
+      "frames": 9014
+    },
+    "A-5-3": {
+      "frames": 9002
+    },
+    "A-5-4": {
+      "frames": 9008
+    }
+  }
+}

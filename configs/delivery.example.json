@@ -4,9 +4,9 @@
     "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-2",
     "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-3",
     "/data/bee26/yolo_format_20260908/converted/indoor_v4_B-5-4",
-    "/data/bee26/yolo_format_20260908/converted/outdoor_v2"
+    "/data/bee26/yolo_format/converted/outdoor_id_only_final"
   ],
   "workers": 4,
-  "human_split_source": "/data/bee26/yolo_format_20260908/converted/human_01_02_03/detect/splits",
-  "description_docx": "/data/bee26/yolo_format_20260908/数据标注说明.docx"
+  "human_split_source": "/data/bee26/yolo_format/converted/human_01_02_03_04_05/detect/splits",
+  "team_id": "595335"
 }

@@ -9,12 +9,13 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 from .io import read_json, write_json
+from .semantics import is_bee
 
 
 def mot_row(frame, row, label, width, height):
     """MOT Challenge 十列：帧、ID、左上角坐标从 1 起算，尺寸不变。"""
     tid = row.get("track_id")
-    if tid is None:
+    if tid is None or not is_bee(row) or int(float(label.split()[0])) != 0:
         return None
     if int(tid) != tid or tid < 1:
         raise ValueError("MOT ID 须为正整数；不自动重编号")
@@ -27,12 +28,17 @@ def mot_row(frame, row, label, width, height):
 
 def _link(source, target):
     target.parent.mkdir(parents=True, exist_ok=True)
-    os.link(source, target)
+    try:
+        os.link(source, target)
+    except OSError:
+        shutil.copy2(source, target)
 
 
-def arrange_dataset(source, destination):
+def arrange_dataset(source, destination, auxiliary=None):
     """输入只选一份已定稿的全量机器标注；人工/旧版继续独立保留。"""
     src, root = Path(source), Path(destination)
+    extra = Path(auxiliary) if auxiliary else root.with_name(root.name + "_附加信息")
+    (extra / "metadata").mkdir(parents=True, exist_ok=True)
     assert read_json(src / "validation.json")["passed"]
     handles, counters, sequence = {}, {}, {}
     try:
@@ -43,18 +49,17 @@ def arrange_dataset(source, destination):
                     (root / "annotations_tracking" / video).mkdir(
                         parents=True, exist_ok=False
                     )
-                    (root / "metadata").mkdir(exist_ok=True)
                     handles[video] = (
                         (root / "annotations_tracking" / video / "tracks.txt").open(
                             "w", encoding="utf-8"
                         ),
                         gzip.open(
-                            root / "metadata" / (video + ".jsonl.gz"),
+                            extra / "metadata" / (video + ".jsonl.gz"),
                             "wt",
                             encoding="utf-8",
                             compresslevel=1,
                         ),  # noqa: SIM115 -- 视频流在 finally 一并关闭
-                        (root / "metadata" / (video + ".frames.jsonl")).open(
+                        (extra / "metadata" / (video + ".frames.jsonl")).open(
                             "w", encoding="utf-8"
                         ),
                     )
@@ -111,10 +116,10 @@ def arrange_dataset(source, destination):
                     "tracking": f"annotations_tracking/{video}/tracks.txt",
                 }
                 if "hidden_detect" in old_paths:
-                    hidden = root / "audit" / "hidden" / rel
+                    hidden = extra / "audit" / "hidden" / rel
                     _link(src / old_paths["hidden_detect"], hidden)
                     f["label_files"]["hidden_detect"] = hidden.relative_to(
-                        root
+                        extra
                     ).as_posix()
                     count["hidden_rows"] += len(f["rows"].get("hidden", []))
                 meta.write(
@@ -139,7 +144,7 @@ def arrange_dataset(source, destination):
             for h in streams:
                 h.close()
     for video, data in sequence.items():
-        (root / "annotations_tracking" / video / "seqinfo.ini").write_text(
+        (extra / "metadata" / (video + ".seqinfo.ini")).write_text(
             f"[Sequence]\nname={video}\nimDir=images/{video}\nframeRate=30\nseqLength={data['max_frame'] + 1}\nimWidth={data['width']}\nimHeight={data['height']}\nimExt=.jpg\n",
             encoding="utf-8",
         )
@@ -154,7 +159,7 @@ def arrange_dataset(source, destination):
                 n += 1
         assert n == count["tracking_rows"]
         write_json(
-            root / "metadata" / (video + ".verified.json"),
+            extra / "metadata" / (video + ".verified.json"),
             dict(count, mot_readback_verified=True),
         )
     return {video: dict(c) for video, c in counters.items()}
@@ -167,32 +172,40 @@ def _arrange_job(args):
 def export_delivery(config, destination):
     """完整交付目录，输出路径应命名为 05_数据标注成果。"""
     root = Path(destination)
+    extra = Path(config.get("auxiliary_output", root.with_name(root.name + "_附加信息")))
+    if extra.resolve() == root.resolve() or root.resolve() in extra.resolve().parents:
+        raise ValueError("附加信息须位于正式提交目录之外")
     root.mkdir(parents=True, exist_ok=False)
+    extra.mkdir(parents=True, exist_ok=False)
     videos = {}
     with ProcessPoolExecutor(max_workers=config.get("workers", 4)) as pool:
         for result in pool.map(
-            _arrange_job, [(p, str(root)) for p in config["inputs"]]
+            _arrange_job, [(p, str(root), str(extra)) for p in config["inputs"]]
         ):
             videos.update(result)
-    with (root / "frame_manifest.jsonl").open("wb") as out:
-        for path in sorted((root / "metadata").glob("*.frames.jsonl")):
+    with (extra / "frame_manifest.jsonl").open("wb") as out:
+        for path in sorted((extra / "metadata").glob("*.frames.jsonl")):
             with path.open("rb") as h:
                 shutil.copyfileobj(h, out)
     (root / "splits").mkdir()
     for split in ("train", "val"):
         (root / "splits" / (split + ".txt")).write_text("")
-    with (root / "splits/unassigned.txt").open("w", encoding="utf-8") as out:
-        for line in (root / "frame_manifest.jsonl").read_text().splitlines():
+    with (extra / "unassigned.txt").open("w", encoding="utf-8") as out:
+        for line in (extra / "frame_manifest.jsonl").read_text().splitlines():
             out.write(json.loads(line)["image_ref"] + "\n")
     if config.get("human_split_source"):
         shutil.copytree(
-            config["human_split_source"], root / "metadata/original_human_splits"
+            config["human_split_source"], extra / "metadata/original_human_splits"
         )
     shutil.copy2(
         Path(__file__).parent / "assets/extract_frames.py", root / "extract_frames.py"
     )
-    if config.get("description_docx"):
-        shutil.copy2(config["description_docx"], root / "数据标注说明.docx")
+    bundled = Path(__file__).parent / "assets/数据标注说明-595335.docx"
+    description = Path(config.get("description_docx", bundled))
+    team_id = config.get("team_id", "595335" if description == bundled else "")
+    if description.is_file():
+        name = f"数据标注说明-{team_id}.docx" if team_id else "数据标注说明.docx"
+        shutil.copy2(description, root / name)
     result = {
         "completed": True,
         "videos": videos,
@@ -201,9 +214,10 @@ def export_delivery(config, destination):
         "total_tracking_rows": sum(v["tracking_rows"] for v in videos.values()),
         "contains_images": False,
         "originals_preserved": True,
-        "docx_pending": not bool(config.get("description_docx")),
+        "docx_pending": not description.is_file(),
+        "auxiliary_output": str(extra),
         "split_status": "unassigned; original human splits preserved separately",
     }
-    write_json(root / "manifest.json", result)
-    write_json(root / "resolved_config.json", config)
+    write_json(extra / "manifest.json", result)
+    write_json(extra / "resolved_config.json", config)
     return result

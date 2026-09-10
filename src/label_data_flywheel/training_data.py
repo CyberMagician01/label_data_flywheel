@@ -5,6 +5,7 @@ from pathlib import Path
 import json
 import numpy as np
 from .io import write_json, sha256
+from .semantics import is_bee
 
 
 def export_coco(frames, destination, image_root):
@@ -36,14 +37,25 @@ def export_coco(frames, destination, image_root):
                 if valid
                 else 0.0,
                 "status": f.get("status", "valid"),
-                "is_unlabeled": not f.get(
-                    "annotation_complete", f.get("source_kind") == "human"
+                "annotation_complete": bool(f.get("annotation_complete", False)),
+                "is_unlabeled": not bool(f.get("annotation_complete")) and not any(
+                    d.get("label_status") in ("human", "human_confirmed")
+                    for d in f["detections"] if is_bee(d)
                 ),
+                "verified_background_boxes": [
+                    [r["bbox_xyxy"][0], r["bbox_xyxy"][1],
+                     r["bbox_xyxy"][2] - r["bbox_xyxy"][0],
+                     r["bbox_xyxy"][3] - r["bbox_xyxy"][1]]
+                    for r in f.get("verified_background_regions", [])
+                ],
                 "source_sample_id": f["sample_id"],
             }
         )
         candidates = [*f["detections"], *f.get("ignore_regions", [])]
         for d in candidates:
+            # 双域共享实体模型学习蜂体；影子仍在原始与双类别检测交付中保留。
+            if not is_bee(d):
+                continue
             status = d.get("label_status", "unconfirmed")
             if not valid or status not in (
                 "human",
@@ -100,7 +112,7 @@ def export_coco(frames, destination, image_root):
                         True,
                         bool(pose_state),
                         has_track,
-                        bool(d.get("confirmed_events")),
+                        bool(d.get("confirmed_events") or d.get("behavior_labels")),
                     ],
                     "inter_group_quality": float(np.clip(d.get("q_inter", q), 0, 1)),
                     "intra_group_quality": float(np.clip(d.get("q_intra", q), 0, 1)),
@@ -109,7 +121,7 @@ def export_coco(frames, destination, image_root):
                     "track_quality": float(d.get("track_quality", q)),
                     "annotator_id": f["group"],
                     "is_pseudo": status == "soft_positive",
-                    "pseudo_score": q,
+                    "pseudo_score": float(d.get("expert_fusion", {}).get("probability") or q),
                     "ignore_region": status == "ignore",
                     "background_weight": 0.0 if status == "ignore" else 1.0,
                     "source_entity_id": d["entity_id"],

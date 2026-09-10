@@ -9,7 +9,7 @@
 ```mermaid
 flowchart LR
   A[室内 YOLO + 关键点 + 动态密度] --> C[统一实体与源帧协议]
-  B[室外 SAM2.1 + 检测吸附 + 姿态] --> C
+  B[室外定稿框点 + 双向关联 + 轨迹片段拼接] --> C
   C --> D[Q² / 多专家校准 / 跨层校验]
   C --> E[轨迹与 BEEG 行为证据]
   D --> F[预算约束人工复核]
@@ -26,19 +26,22 @@ flowchart LR
 |---|---|
 | 运行标注整理与复核候选生成 | `bee-flywheel round --config ... --output ...` |
 | 数量、热图、近邻网络与纯视频变化复核 | `bee-flywheel colony --config configs/colony.example.json --output 新目录` |
-| 导出、校验标准标注包 | `bee-flywheel export-annotations` / `validate-annotations` |
+| 导出、校验内部 COCO 交换包 | `bee-flywheel export-annotations` / `validate-annotations` |
 | 转换为 YOLO，保留原标注与 ID | `bee-flywheel export-yolo` / `validate-yolo` |
 | 整理检测、姿态和 MOT 三个交付目录 | `bee-flywheel export-delivery --config configs/delivery.example.json --output 05_数据标注成果` |
 | 当前最优室内全量 ID 方案 | [legacy/indoor/run_appearance20.py](legacy/indoor/run_appearance20.py) |
-| 室外原版 SAM2.1 与几何吸附 | [legacy/outdoor](legacy/outdoor) |
+| 当前室外 ID-only 最终方案 | [run_final.py](legacy/outdoor/final_id_only/run_final.py) |
+| 室外 SAM2.1 对照路线 | [sam2_bee_tracker.py](legacy/outdoor/sam2_bee_tracker.py) |
 | 关键点、YOLO、密度推理 | [tools/infer_models.py](tools/infer_models.py) |
 | 双域六阶段联合训练 | [E 路线](legacy/route_e/ecdetseg/configs/bee_e/e_route_continuous_1280.yml) |
-| 快照绑定到 E 训练器 | [tools/prepare_e_round.py](tools/prepare_e_round.py) |
+| 快照绑定到 E 训练器并执行 | [tools/prepare_e_round.py](tools/prepare_e_round.py)，`--execute` 启动训练 |
+| 同协议最优模型比选 | `bee-flywheel select-champion` |
 | 旧 Y 路线及全部自定义模型 | [legacy/route_y](legacy/route_y) |
 | ViTPose / CountAnything / CountGD++ 历史实验 | [legacy/server_experiments](legacy/server_experiments) |
 | 文档功能对应实现 | [docs/功能与验证.md](docs/功能与验证.md) |
-| 学术方法正文（不插实验图，保留方法流程图） | [Hive-Q²K Dual 方法](docs/Hive_Q2K_Dual_方法.md) |
-| 同一正文的室内实验配图版（检测、补框与跟踪） | [室内实验配图版](docs/Hive_Q2K_Dual_方法_室内实验配图.md) |
+| 最新学术方法正文（含团队软件截图及室内结果） | [Hive-Q²K Dual 方法](docs/Hive_Q2K_Dual_方法.md) |
+| 室内实验配图版的保留入口（与最新版正文同步） | [室内实验配图版](docs/Hive_Q2K_Dual_方法_室内实验配图.md) |
+| 正式数据标注说明（队伍 595335） | [数据标注说明-595335.docx](src/label_data_flywheel/assets/数据标注说明-595335.docx) |
 | 群体行为与蜂学一手文献、实测及使用 | [docs/群体行为与蜂学研究.md](docs/群体行为与蜂学研究.md) |
 
 ## 安装和使用
@@ -58,7 +61,11 @@ bee-flywheel --help
 bee-flywheel round --config configs/round.example.json --output /data/bee26/flywheel_rounds/round_001
 ```
 
-默认输出统一标注、质量证据、ErrorCube、行为观测与复核队列。采样计划和训练快照由相应配置启用。`review_decisions` 可接入上一轮的人工决定；`candidate_evidence` 和 `expert_calibration` 可接入完成校准的专家结果。`pose_sources` 把已有同帧关键点与 SAM 轨迹对齐。
+默认输出统一标注、分层质量、ErrorCube、行为观测与复核队列。`review_decisions` 接入人工决定后先修正真实观测，再重建受影响视频的插值。`quality_references` 可提供人工参考，用于位置、头尾和身份误差；未提供时使用标明来源的一致性证据。Q² 写回训练快照，由 E 训练器实际加权。`previous_round_policy` 读取上一轮的采样目标、知识图和提示记忆；没有手填目标时，按应用覆盖、评价覆盖与训练误差生成目标分布。
+
+`export_review_tasks=true` 输出团队工具可读取的 LabelMe 任务；编辑 `review_tasks/editable` 后，用 `bee-flywheel import-review-tasks --input 任务目录 --output decisions.json` 回传。未改动且未标记确认的对象不自动变成人工监督。个体行为和群体判读分别导出到 `training_snapshot/behavior`，对应 `train-behavior` 与 `train-colony-behavior` 两个入口。`candidate_evidence`、`expert_calibration` 接入多专家结果；`pose_sources` 按同帧匹配附着已有头尾点。
+
+在 E 的模型环境中运行 `python tools/prepare_e_round.py --snapshot 快照目录 --base-config 原训练配置.yml --output 新轮次/train.yml --execute`，即可在数据与划分校验后启动训练；接续权重时增加 `--checkpoint 权重路径 --resume`。训练后的预测用 `evaluate` 按固定 calibration 协议评估，将同协议结果登记为模型记录，再用 `select-champion --champion 原模型.json --candidate 新模型.json --directions 指标方向.json --output 新登记目录` 比选。`directions` 例如 `{"IDF1":"max","MOTA":"max"}`；模型记录字段见 `registry.choose_champion`。测试集不参与跨轮比选，后续预测仍由原模型推理入口产生并送入下一轮。
 
 ### YOLO 标注副本
 
@@ -76,11 +83,11 @@ bee-flywheel validate-yolo --input /data/bee26/yolo_new_version
 
 ### 交付目录
 
-`export-delivery` 将已转换的全量机器标注整理为 `annotations/<视频>/`（YOLO 检测）、`annotations_pose/<视频>/`（YOLO 两点姿态）和 `annotations_tracking/<视频>/tracks.txt`（MOT 十列）。MOT 的帧号和左上角坐标从 1 起算；源图文件名和 ID 数值保留，metadata 记录 TXT 与 MOT 的行号对应关系。隐藏框存入独立 audit 目录；无 ID 的影子保留检测和姿态，不生成虚构轨迹。人工标注副本独立保留。
+`export-delivery` 整理 `annotations/<视频>/`（YOLO 五列检测）、`annotations_pose/<视频>/`（YOLO 两点姿态）和 `annotations_tracking/<视频>/tracks.txt`（MOT 十列）。MOT 帧号、左上角坐标从 1 起算。影子保留独立检测类别，两点可见性为零，不参与轨迹、蜂体训练和群体数量统计；原始点与 ID 保留在附加信息中。
 
-完整包同时提供 `splits`、`frame_manifest.jsonl`、抽帧脚本和可选的 DOCX 说明。全量自动标注未指定划分时，train/val 为空、源帧全部保留在 unassigned。配套图像始终存放在标注包外。已完成的八段全量格式转换、15 项相关测试及逐行检查见 [转换证据](evidence/yolo_conversion_verified.json)；三目录及 MOT 实际数量见 [交付检查](evidence/delivery_verified.json)。
+提交目录另外只放 `splits/train.txt`、`splits/val.txt`、`extract_frames.py` 和 `数据标注说明-595335.docx`。按已确定的提交安排，划分占位文件保持为空。帧索引、逐行来源映射、隐藏候选、seqinfo、原人工划分和未分配帧列表保存到并列的 `05_数据标注成果_附加信息/`。配套图像放在标注包外。历史全量检查见 [转换证据](evidence/yolo_conversion_verified.json) 和 [交付检查](evidence/delivery_verified.json)；历史归档结构保留，以新版导出入口和正式 Word 为当前提交规范。
 
-YOLO 独立副本发布到私有 ModelScope 的 `versions/v5_yolo_format_20260908/`。其中 `annotations/` 保留室内、室外、原室外姿态及人工标注的独立归档；`delivery/05_数据标注成果.tar.gz` 是按上述三个平行目录整理的全量八视频交付包。原 v2/v4 标注与已冻结 benchmark 保持原样，GitHub 另存 [benchmark YOLO 副本](legacy/indoor/benchmark_yolo)。
+历史 YOLO 副本发布到私有 ModelScope 的 `versions/v5_yolo_format_20260908/`。其中 `annotations/` 保留室内、室外、原室外姿态及人工标注的独立归档；`delivery/05_数据标注成果.tar.gz` 是当时的全量八视频交付包，其附加信息布局以该历史版本为准。原 v2/v4 标注与已冻结 benchmark 保持原样，GitHub 另存 [benchmark YOLO 副本](legacy/indoor/benchmark_yolo)。
 
 ```bash
 # 先验证具体模型命令；去掉 --dry-run 即实际执行。
@@ -118,7 +125,9 @@ bee-flywheel evaluate --gt /data/bee26/gt.jsonl --input /data/bee26/pred.jsonl \
 
 验证结果集中在 [evidence](evidence)。已执行：真实 RGB/IR 关键点与密度推理、Y 路线 checkpoint 推理、3090 上 E 网络双域前向/反向及优化器更新、4090 上室外 A-5-1 连续 16 帧原版 SAM 推理、32 帧双域飞轮处理，以及真实 348 个标注框的 E schema 数据加载。
 
-核心模块 34 项测试、E 路线 153 项测试通过。具体证据见 [verification_summary.json](evidence/verification_summary.json)；保留版本见 [model_registry.json](configs/model_registry.json)。数据标准化另用 34 个真实源帧验证，见 [annotation_standardization_verified.json](evidence/annotation_standardization_verified.json)。
+历史核心模块 34 项、E 路线 153 项测试结果见 [verification_summary.json](evidence/verification_summary.json)；保留版本见 [model_registry.json](configs/model_registry.json)。数据标准化另用 34 个真实源帧验证，见 [annotation_standardization_verified.json](evidence/annotation_standardization_verified.json)。
+
+本次代码与两份说明的对齐检查见 [alignment_validation.json](evidence/alignment_validation.json)。新增回归覆盖 Q² 到真实训练梯度、不完全标注的背景屏蔽、人工复核后重建插值、跨轮知识与提示记忆、行为监督粒度、影子类别，以及室外六帧输入的完整 ID-only 流程。这里的六帧是接口回归输入，不计作新的室外精度实验。
 
 这些证明实现能运行。新增整个飞轮尚未完成完整训练和独立留出集的收益实验，因此不宣称整体 mAP、IDF1 或行为识别率已提高。历史最优版本保持原样；行为输出默认是候选，人工确认后才能进入监督学习。
 

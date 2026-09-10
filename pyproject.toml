@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "label-data-flywheel"
-version = "0.3.0"
+version = "0.4.0"
 description = "Dual-domain bee annotation, quality evidence, review and data feedback"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.23,<3", "Pillow>=9", "ijson>=3.2"]
@@ -24,7 +24,7 @@ bee-flywheel = "label_data_flywheel.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-label_data_flywheel = ["assets/*.py", "assets/*.md", "assets/*.json"]
+label_data_flywheel = ["assets/*.py", "assets/*.md", "assets/*.json", "assets/*.docx"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

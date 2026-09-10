@@ -6,6 +6,7 @@ import numpy as np
 from .geometry import center, pose
 from .postprocess import is_fill
 from .density import count_preserving_map
+from .semantics import is_bee
 
 
 DEFAULTS = {
@@ -343,7 +344,7 @@ def analyze_colony(frames, config=None):
             w["first_frame"] = f
         w["last_frame"], w["n"] = f, w["n"] + 1
         w["exposure"] += 1 / fps
-        valid = [d for d in frame["detections"] if d.get("label_status") != "invalid"]
+        valid = [d for d in frame["detections"] if is_bee(d) and d.get("label_status") != "invalid"]
         ds = [d for d in valid if not is_fill(d)]
         w["counts"].append(len(ds))
         w["objects"] += len(ds)

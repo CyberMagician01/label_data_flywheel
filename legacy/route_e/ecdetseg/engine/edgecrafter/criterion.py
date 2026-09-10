@@ -168,6 +168,15 @@ class ECCriterion(nn.Module):
             ignored = torch.zeros(
                 reference.shape[1], dtype=torch.bool, device=reference.device,
             )
+            if not bool(target.get('annotation_complete', True)):
+                ignored[:] = True
+                negative_boxes = target.get('verified_background_boxes')
+                if negative_boxes is not None and len(negative_boxes):
+                    negative_iou, _ = box_iou(
+                        box_cxcywh_to_xyxy(outputs['pred_boxes'][batch_index]),
+                        box_cxcywh_to_xyxy(negative_boxes.to(outputs['pred_boxes'])),
+                    )
+                    ignored[negative_iou.amax(dim=1) >= self.ignore_query_iou_threshold] = False
             ignore_boxes = target.get('ignore_boxes')
             if ignore_boxes is not None and len(ignore_boxes):
                 ignore_boxes = ignore_boxes.to(
@@ -211,10 +220,13 @@ class ECCriterion(nn.Module):
             pseudo = target.get('is_pseudo', torch.zeros(count, dtype=torch.bool, device=device))
             score = target.get('pseudo_score', torch.ones(count, device=device))
             weight = torch.where(pseudo, score, torch.ones_like(score)).to(torch.float32)
+            quality = target.get('hierarchy_quality', torch.ones(count, device=device))
             if mode == 'pose':
-                weight = weight * target.get('pose_quality', torch.ones(count, device=device))
+                quality = target.get('pose_quality', quality)
             elif mode == 'track':
+                quality = target.get('track_quality', quality)
                 weight = weight * target.get('trajectory_stability', torch.ones(count, device=device))
+            weight = weight * quality.clamp(0, 1)
             values.append(weight[target_indices])
             matched_count = max(len(target_indices), 1)
             domain_id = int(target.get('domain_id', torch.zeros(1, device=device)).flatten()[0])
@@ -272,18 +284,16 @@ class ECCriterion(nn.Module):
         target = F.one_hot(target_classes, num_classes=self.num_classes + 1)[..., :-1]
 
         target_score_o = torch.zeros_like(target_classes, dtype=src_logits.dtype)
-        target_score_o[idx] = ious.to(target_score_o.dtype) * self._matched_instance_weight(
-            targets, indices, src_logits.device
-        ).to(target_score_o.dtype)
+        target_score_o[idx] = ious.to(target_score_o.dtype)
         target_score = target_score_o.unsqueeze(-1) * target
 
         pred_score = F.sigmoid(src_logits).detach()
         weight = self.alpha * pred_score.pow(self.gamma) * (1 - target) + target_score
 
         loss = F.binary_cross_entropy_with_logits(src_logits, target_score, weight=weight, reduction='none')
-        loss = (loss * self._background_query_weight(
-            outputs, targets, indices, src_logits,
-        ).unsqueeze(-1)).sum() / num_boxes
+        query_weight = self._background_query_weight(outputs, targets, indices, src_logits)
+        query_weight[idx] = self._matched_instance_weight(targets, indices, src_logits.device)
+        loss = (loss * query_weight.unsqueeze(-1)).sum() / num_boxes
         return {'loss_vfl': loss}
 
     def loss_labels_mal(self, outputs, targets, indices, num_boxes, values=None):
@@ -305,9 +315,7 @@ class ECCriterion(nn.Module):
         target = F.one_hot(target_classes, num_classes=self.num_classes + 1)[..., :-1]
 
         target_score_o = torch.zeros_like(target_classes, dtype=src_logits.dtype)
-        target_score_o[idx] = ious.to(target_score_o.dtype) * self._matched_instance_weight(
-            targets, indices, src_logits.device
-        ).to(target_score_o.dtype)
+        target_score_o[idx] = ious.to(target_score_o.dtype)
         target_score = target_score_o.unsqueeze(-1) * target
 
         pred_score = F.sigmoid(src_logits).detach()
@@ -318,9 +326,9 @@ class ECCriterion(nn.Module):
             weight = pred_score.pow(self.gamma) * (1 - target) + target
 
         loss = F.binary_cross_entropy_with_logits(src_logits, target_score, weight=weight, reduction='none')
-        loss = (loss * self._background_query_weight(
-            outputs, targets, indices, src_logits,
-        ).unsqueeze(-1)).sum() / num_boxes
+        query_weight = self._background_query_weight(outputs, targets, indices, src_logits)
+        query_weight[idx] = self._matched_instance_weight(targets, indices, src_logits.device)
+        loss = (loss * query_weight.unsqueeze(-1)).sum() / num_boxes
         return {'loss_mal': loss}
 
     def loss_boxes(self, outputs, targets, indices, num_boxes, boxes_weight=None):
@@ -536,7 +544,20 @@ class ECCriterion(nn.Module):
             return {}
 
         prediction = outputs['pred_density']
+        # 不完全标注没有整图数量真值；不以局部正例强迫整图密度回归。
+        complete = [i for i, target in enumerate(targets)
+                    if bool(target.get('annotation_complete', True))]
+        if not complete:
+            zero = prediction.sum() * 0
+            return {'loss_density_map': zero, 'loss_density_count': zero}
+        prediction = prediction[complete]
+        targets = [targets[i] for i in complete]
         batch_size, _, height, width = prediction.shape
+        image_quality = torch.stack([
+            target.get('hierarchy_quality', prediction.new_ones(len(target['boxes']))).mean()
+            if len(target['boxes']) else prediction.new_tensor(1.)
+            for target in targets
+        ]).to(prediction).clamp(0, 1)
         if self.use_adaptive_density_target:
             target_density, target_counts = self._build_adaptive_density_target(
                 prediction, targets,
@@ -552,11 +573,11 @@ class ECCriterion(nn.Module):
                 map_error * pixel_weight
             ).flatten(1).sum(1) / pixel_weight.flatten(1).sum(1).clamp_min(1.0)
             loss_density_count = F.smooth_l1_loss(
-                torch.log1p(pred_counts), torch.log1p(target_counts), reduction='mean',
+                torch.log1p(pred_counts), torch.log1p(target_counts), reduction='none',
             )
             return {
-                'loss_density_map': loss_density_map.mean(),
-                'loss_density_count': loss_density_count,
+                'loss_density_map': (loss_density_map * image_quality).mean(),
+                'loss_density_count': (loss_density_count * image_quality).mean(),
             }
         target_density = prediction.new_zeros((batch_size, 1, height, width))
         target_counts = prediction.new_zeros(batch_size)
@@ -587,8 +608,8 @@ class ECCriterion(nn.Module):
         pred_counts = prediction.flatten(1).sum(1)
         pred_distribution = prediction / pred_counts.clamp_min(1e-6)[:, None, None, None]
         target_distribution = target_density / target_counts.clamp_min(1.0)[:, None, None, None]
-        loss_density_map = (pred_distribution - target_distribution).abs().flatten(1).sum(1).mean()
-        loss_density_count = ((pred_counts - target_counts).abs() / (target_counts + 1.0)).mean()
+        loss_density_map = ((pred_distribution - target_distribution).abs().flatten(1).sum(1) * image_quality).mean()
+        loss_density_count = ((pred_counts - target_counts).abs() / (target_counts + 1.0) * image_quality).mean()
         return {
             'loss_density_map': loss_density_map,
             'loss_density_count': loss_density_count,
@@ -778,6 +799,9 @@ class ECCriterion(nn.Module):
             matched[batch_index, source_indices] = True
         valid = outputs.get('pred_query_valid', torch.ones_like(matched)).bool()
         weights = weights * (~matched & valid).to(weights.dtype)
+        weights = weights * self._background_query_weight(
+            outputs, targets, indices, outputs['pred_logits'],
+        )
         confidence = outputs['pred_logits'].amax(dim=-1)
         loss = F.binary_cross_entropy_with_logits(
             confidence, torch.zeros_like(confidence), reduction='none'

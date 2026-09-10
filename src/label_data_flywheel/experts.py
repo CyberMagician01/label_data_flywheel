@@ -6,6 +6,8 @@ import numpy as np
 from .calibration import fit_isotonic, calibrated
 from .quality import fuse_experts, route_candidate, head_tail_evidence
 from .geometry import overlap, pose, center, wrap
+from .semantics import is_bee
+from .postprocess import is_fill
 
 
 def context_key(record):
@@ -109,6 +111,8 @@ def cross_layer_evidence(frames, behavior=None):
         frames, key=lambda f: (f["domain"], f["video"], f["group"], f["frame"])
     ):
         for d in f["detections"]:
+            if not is_bee(d) or is_fill(d) or d.get("label_status") == "invalid":
+                continue
             base = {
                 "sample_id": d["entity_id"],
                 "frame_id": f["sample_id"],

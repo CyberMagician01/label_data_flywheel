@@ -1,0 +1,63 @@
+{
+  "revision": "flywheel_0.4.0",
+  "date": "2026-09-10",
+  "base_commit": "3bcb3bb44dfe64a6829f13af4d7c8b3ff196c8ac",
+  "scope": "代码、Hive-Q2K Dual 方法与队伍 595335 数据标注说明对齐",
+  "checks": [
+    {
+      "command": "python -m pytest -q -p no:cacheprovider --ignore=tests/test_behavior_learning.py -k 'not official_trackeval'",
+      "python": "3.12",
+      "passed": 72,
+      "skipped": 1,
+      "deselected": 1,
+      "skipped_reason": "当前 Python 无 torch，实际损失测试另在 PyTorch 环境执行",
+      "deselected_reason": "本轮未安装官方 TrackEval 额外依赖，历史评测证据保持原样"
+    },
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/test_e_loss_alignment.py tests/test_behavior_learning.py",
+      "python": "3.9",
+      "torch": "2.5.1+cu121",
+      "passed": 7,
+      "scope": "从实际 E 源码提取损失与变换方法执行 PyTorch 梯度和几何回归；个体、群体小 MLP 实际训练与预测",
+      "full_e_network_training": false
+    },
+    {
+      "command": "python -m pip wheel --no-deps --no-build-isolation .",
+      "passed": true,
+      "version": "0.4.0",
+      "bundled_docx_matches_source": true,
+      "bundled_extract_frames": true
+    }
+  ],
+  "outdoor_final_pipeline": {
+    "test": "tests/test_outdoor_final.py",
+    "included_in_core_tests": true,
+    "input": "6 帧生成的确定性接口回归输入",
+    "executed": ["bidirectional_tracker", "tracklet_stitcher", "promote_id_only", "aggregate"],
+    "non_identity_fields_preserved": true,
+    "new_real_video_accuracy_experiment": false
+  },
+  "documents": {
+    "method": "docs/Hive_Q2K_Dual_方法.md",
+    "illustrated_entry_synced": "docs/Hive_Q2K_Dual_方法_室内实验配图.md",
+    "submission_docx": "src/label_data_flywheel/assets/数据标注说明-595335.docx",
+    "docx_rendered_pages": 16,
+    "all_pages_visually_inspected": true,
+    "method_image_references_present": true,
+    "historical_experiment_metrics_unchanged": true
+  },
+  "preserved": {
+    "benchmark_bytes_match_original_manifest": true,
+    "original_annotations_unchanged": true,
+    "train_val_submission_placeholders_empty": true,
+    "existing_modelscope_archives_unchanged": true,
+    "selected_model_weights_not_replaced": true
+  },
+  "not_executed_in_this_revision": [
+    "72,031 帧全量重处理",
+    "完整 E 模型再训练和独立留出集收益评测",
+    "两款 GUI 软件内的实际人工操作；本轮验证标准 LabelMe 文件往返",
+    "外部 T-Rex 服务调用",
+    "重新发布 ModelScope 数据归档"
+  ]
+}

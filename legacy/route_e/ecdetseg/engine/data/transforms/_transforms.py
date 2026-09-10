@@ -810,11 +810,12 @@ class SanitizeBoundingBoxes:
         boxes = target.get('boxes')
         height, width = F.get_size(image)
         target = dict(target)
-        if 'ignore_boxes' in target:
-            target['ignore_boxes'] = _clip_independent_boxes(
-                target['ignore_boxes'], height, width,
-                min_size=max(self.min_size, 1.0),
-            )
+        for region_name in ('ignore_boxes', 'verified_background_boxes'):
+            if region_name in target:
+                target[region_name] = _clip_independent_boxes(
+                    target[region_name], height, width,
+                    min_size=max(self.min_size, 1.0),
+                )
         if boxes is None or len(boxes) == 0:
             outputs = (image, target, *extra)
             return outputs if extra else outputs[:2]
@@ -897,17 +898,18 @@ class BeeTargetCenteredCrop:
             clipped[keep], key='boxes', box_format='XYXY',
             spatial_size=(crop_height, crop_width),
         )
-        if 'ignore_boxes' in target:
-            ignore_boxes = target['ignore_boxes']
-            ignore_raw = (
-                ignore_boxes.as_subclass(torch.Tensor)
-                if hasattr(ignore_boxes, 'as_subclass') else ignore_boxes
-            ).clone()
-            ignore_raw[:, 0::2] -= left
-            ignore_raw[:, 1::2] -= top
-            target['ignore_boxes'] = _clip_independent_boxes(
-                ignore_raw, crop_height, crop_width
-            )
+        for region_name in ('ignore_boxes', 'verified_background_boxes'):
+            if region_name in target:
+                ignore_boxes = target[region_name]
+                ignore_raw = (
+                    ignore_boxes.as_subclass(torch.Tensor)
+                    if hasattr(ignore_boxes, 'as_subclass') else ignore_boxes
+                ).clone()
+                ignore_raw[:, 0::2] -= left
+                ignore_raw[:, 1::2] -= top
+                target[region_name] = _clip_independent_boxes(
+                    ignore_raw, crop_height, crop_width
+                )
         if 'area' in target:
             target['area'] = new_area[keep]
         if 'keypoints' in target:
@@ -946,8 +948,9 @@ class BeeDirectionRotation:
         target = dict(target)
         if 'boxes' in target:
             target['boxes'] = F.rotate(target['boxes'], angle)
-        if 'ignore_boxes' in target:
-            target['ignore_boxes'] = F.rotate(target['ignore_boxes'], angle)
+        for region_name in ('ignore_boxes', 'verified_background_boxes'):
+            if region_name in target:
+                target[region_name] = F.rotate(target[region_name], angle)
         if 'masks' in target:
             target['masks'] = F.rotate(target['masks'], angle, fill=0)
         if 'keypoints' in target:
@@ -1003,8 +1006,9 @@ class RandomHorizontalFlipWithKeypoints:
             image = F.horizontal_flip(image)
             target = dict(target)
             target['boxes'] = F.horizontal_flip(target['boxes'])
-            if 'ignore_boxes' in target:
-                target['ignore_boxes'] = F.horizontal_flip(target['ignore_boxes'])
+            for region_name in ('ignore_boxes', 'verified_background_boxes'):
+                if region_name in target:
+                    target[region_name] = F.horizontal_flip(target[region_name])
             if 'keypoints' in target:
                 keypoints = target['keypoints'].clone()
                 keypoints[..., 0] = width - keypoints[..., 0]
@@ -1109,14 +1113,15 @@ class LetterBox:
             spatial_size=(output_h, output_w),
         )
 
-        if 'ignore_boxes' in target:
-            ignore_boxes = target['ignore_boxes'].as_subclass(torch.Tensor).clone()
-            ignore_boxes[:, 0::2] = ignore_boxes[:, 0::2] * scale + left
-            ignore_boxes[:, 1::2] = ignore_boxes[:, 1::2] * scale + top
-            target['ignore_boxes'] = convert_to_tv_tensor(
-                ignore_boxes, key='boxes', box_format='XYXY',
-                spatial_size=(output_h, output_w),
-            )
+        for region_name in ('ignore_boxes', 'verified_background_boxes'):
+            if region_name in target:
+                ignore_boxes = target[region_name].as_subclass(torch.Tensor).clone()
+                ignore_boxes[:, 0::2] = ignore_boxes[:, 0::2] * scale + left
+                ignore_boxes[:, 1::2] = ignore_boxes[:, 1::2] * scale + top
+                target[region_name] = convert_to_tv_tensor(
+                    ignore_boxes, key='boxes', box_format='XYXY',
+                    spatial_size=(output_h, output_w),
+                )
         if 'masks' in target:
             masks = F.resize(
                 target['masks'].to(torch.uint8), [resized_h, resized_w],

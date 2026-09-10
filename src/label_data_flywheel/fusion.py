@@ -3,6 +3,7 @@
 import copy
 import numpy as np
 from .geometry import overlap
+from .semantics import is_bee
 
 
 def attach_pose(frame, pose_frame, min_iou=0.5):
@@ -15,8 +16,8 @@ def attach_pose(frame, pose_frame, min_iou=0.5):
     ):
         raise ValueError("姿态融合必须使用同域同视频同源帧")
     out = copy.deepcopy(frame)
-    ds = out["detections"]
-    source = [d for d in pose_frame["detections"] if d.get("keypoints")]
+    ds = [d for d in out["detections"] if is_bee(d)]
+    source = [d for d in pose_frame["detections"] if is_bee(d) and d.get("keypoints")]
     iou = overlap([d["bbox_xyxy"] for d in ds], [d["bbox_xyxy"] for d in source])[2]
     matched = 0
     if iou.size:

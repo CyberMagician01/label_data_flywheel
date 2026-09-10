@@ -5,6 +5,7 @@ import math
 import numpy as np
 from .geometry import center, pose, wrap
 from .postprocess import is_fill
+from .semantics import is_bee
 
 
 def calibrate_motion(speeds):
@@ -51,7 +52,7 @@ def analyze(frames, config=None):
     frames = [
         {**f, "detections": [
             d for d in f["detections"]
-            if not is_fill(d) and d.get("label_status") != "invalid"
+            if is_bee(d) and not is_fill(d) and d.get("label_status") != "invalid"
         ]}
         for f in frames
     ]
@@ -84,7 +85,8 @@ def analyze(frames, config=None):
             p = pose(d)
             c = center(d)
             b = d["bbox_xyxy"]
-            length = p["length"] if p and p["length"] > 0 else None
+            pose_usable = p and (p["confidence"] or 0) >= cfg.get("pose_min_confidence", 0.05)
+            length = p["length"] if pose_usable and p["length"] > 0 else max(b[2]-b[0], b[3]-b[1])
             old = prev.get(key)
             df = f["frame"] - old["frame"] if old else 0
             continuous = old is not None and 0 < df <= max_gap
@@ -160,9 +162,11 @@ def analyze(frames, config=None):
                 "center": c.tolist(),
                 "normalized_center": norm.tolist(),
                 "body_length": length,
-                "angle": p["angle"] if p else None,
+                "body_length_source": "head_tail" if pose_usable else "bbox_long_side",
+                "angle": p["angle"] if pose_usable else None,
                 "speed_px_per_source_frame": speed,
                 "speed_bl_per_source_frame": bl,
+                "speed_bl_per_second": bl * f["fps"] if bl is not None else None,
                 "velocity_px_per_source_frame": (
                     (c - np.asarray(old["center"])) / df
                 ).tolist()
@@ -171,7 +175,7 @@ def analyze(frames, config=None):
                 "angular_speed_rad_per_source_frame": float(
                     wrap(p["angle"] - old["angle"]) / df
                 )
-                if continuous and p and old["angle"] is not None
+                if continuous and pose_usable and old["angle"] is not None
                 else None,
                 "motion_state": previous["state"],
                 "region_state": region,
@@ -183,6 +187,8 @@ def analyze(frames, config=None):
                 "context_id": f["context_id"],
                 "hive_id": f["hive_id"],
             }
+            angular = row["angular_speed_rad_per_source_frame"]
+            row["angular_speed_rad_per_second"] = angular * f["fps"] if angular is not None else None
             observations.append(row)
             tracks[key].append(row)
             prev[key] = row
@@ -219,8 +225,8 @@ def analyze(frames, config=None):
                 facing = max(
                     abs(wrap(a["angle"] - direction)),
                     abs(wrap(b["angle"] - direction - math.pi)),
-                )
-                same_direction = abs(wrap(a["angle"] - b["angle"]))
+                ) if a["angle"] is not None and b["angle"] is not None else None
+                same_direction = abs(wrap(a["angle"] - b["angle"])) if facing is not None else None
                 av = a.get("velocity_px_per_source_frame")
                 bv = b.get("velocity_px_per_source_frame")
                 co_motion = (
@@ -232,10 +238,10 @@ def analyze(frames, config=None):
                 )
                 interaction = (
                     "directed_interaction"
-                    if facing < math.pi / 3 and duration >= min_duration
+                    if facing is not None and facing < math.pi / 3 and duration >= min_duration
                     else (
                         "following"
-                        if same_direction < math.pi / 6
+                        if same_direction is not None and same_direction < math.pi / 6
                         and co_motion is not None
                         and co_motion > 0.7
                         and duration >= min_duration
@@ -266,11 +272,11 @@ def analyze(frames, config=None):
                         "interaction_state": interaction,
                         "duration_source_frames": duration,
                         "normalized_distance": normalized,
-                        "relative_orientation": float(same_direction),
+                        "relative_orientation": float(same_direction) if same_direction is not None else None,
                         "co_motion": co_motion,
                         "evidence_components": {
                             "distance": normalized,
-                            "facing_error": float(facing),
+                            "facing_error": float(facing) if facing is not None else None,
                             "duration": duration,
                         },
                         "upstream_entities": [a["entity_id"], b["entity_id"]],

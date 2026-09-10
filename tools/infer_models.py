@@ -11,6 +11,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from label_data_flywheel.io import read_json, write_json
+from label_data_flywheel.semantics import is_bee, entity_rules
 
 
 def main():
@@ -51,7 +52,8 @@ def main():
         }
         if result.keypoints is not None:
             for d, k in zip(output["detections"], result.keypoints.data.cpu().tolist()):
-                d["keypoints"] = {"head": k[0], "abdomen_tip": k[1]}
+                if is_bee(d):
+                    d["keypoints"] = {"head": k[0], "abdomen_tip": k[1]}
     elif args.model == "vitpose":
         if args.vitpose_root:
             sys.path.insert(0, str(args.vitpose_root))
@@ -70,7 +72,8 @@ def main():
 
         model = init_pose_model(args.config, args.checkpoint, device=args.device)
         data = read_json(args.detections)
-        ds = data["detections"]
+        data["detections"] = [entity_rules(d) for d in data["detections"]]
+        ds = [d for d in data["detections"] if is_bee(d)]
         if "test_pipeline" not in model.cfg:
             model.cfg.test_pipeline = copy.deepcopy(model.cfg.data.test.pipeline)
         model.cfg.test_pipeline.insert(
@@ -84,7 +87,7 @@ def main():
             people,
             format="xyxy",
             dataset_info=dataset_info,
-        )
+        ) if people else ([], None)
         if len(results) != len(ds):
             raise ValueError("姿态输出数量与输入框不同")
         for d, r in zip(ds, results):

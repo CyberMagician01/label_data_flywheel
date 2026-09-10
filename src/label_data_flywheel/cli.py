@@ -47,7 +47,7 @@ def main(argv=None):
     for name in ("input", "decisions", "reviewer", "output"):
         colony_review.add_argument("--" + name, required=True)
     annotations = subs.add_parser(
-        "export-annotations", help="只导出数据飞轮标注包，不生成参赛推理程序"
+        "export-annotations", help="内部 COCO 交换包；正式 05 材料用 export-delivery"
     )
     annotations.add_argument("--config", required=True)
     annotations.add_argument("--output", required=True)
@@ -71,6 +71,20 @@ def main(argv=None):
     behavior_train.add_argument("--output", required=True)
     behavior_train.add_argument("--epochs", type=int, default=100)
     behavior_train.add_argument("--device", default="cpu")
+    group_train = subs.add_parser("train-colony-behavior")
+    group_train.add_argument("--input", required=True)
+    group_train.add_argument("--output", required=True)
+    group_train.add_argument("--epochs", type=int, default=100)
+    group_train.add_argument("--device", default="cpu")
+    select = subs.add_parser("select-champion", help="按同一 calibration 协议比选并另存最优模型登记")
+    for name in ("champion", "candidate", "directions", "output"):
+        select.add_argument("--" + name, required=True)
+    task_export = subs.add_parser("export-review-tasks")
+    frame_args(task_export)
+    task_export.add_argument("--queue", required=True)
+    task_import = subs.add_parser("import-review-tasks")
+    task_import.add_argument("--input", required=True)
+    task_import.add_argument("--output", required=True)
     export = subs.add_parser("export-training")
     frame_args(export)
     export.add_argument("--image-root", required=True)
@@ -96,6 +110,20 @@ def main(argv=None):
                 run_round(read_json(args.config), args.output), ensure_ascii=False
             )
         )
+        return
+    if args.command == "select-champion":
+        from .registry import choose_champion, create_release
+        candidate = read_json(args.candidate)
+        if candidate.get("split") != "calibration":
+            raise ValueError("跨轮模型选择只使用 calibration；test 仅作最终评价")
+        selected, decision = choose_champion(
+            read_json(args.champion), candidate, read_json(args.directions))
+        create_release(args.output, {"selected_model": selected, "selection": decision})
+        print(json.dumps(decision, ensure_ascii=False))
+        return
+    if args.command == "import-review-tasks":
+        from .review_tasks import import_tasks
+        write_json(args.output, import_tasks(args.input))
         return
     if args.command == "colony":
         from .colony_runner import run_colony
@@ -183,10 +211,11 @@ def main(argv=None):
 
         write_json(args.output, fit_experts(read_json(args.input)))
         return
-    if args.command == "train-behavior":
-        from .behavior_learning import train
+    if args.command in ("train-behavior", "train-colony-behavior"):
+        from .behavior_learning import train, train_colony
 
-        result = train(read_json(args.input), args.output, args.epochs, args.device)
+        trainer = train_colony if args.command == "train-colony-behavior" else train
+        result = trainer(read_json(args.input), args.output, args.epochs, args.device)
         write_json(Path(args.output).with_suffix(".training.json"), result)
         return
     if args.command == "backend":
@@ -225,6 +254,10 @@ def main(argv=None):
             source=args.source,
         )
     )
+    if args.command == "export-review-tasks":
+        from .review_tasks import export_tasks
+        export_tasks(frames, read_json(args.queue), args.output)
+        return
     if args.command == "export-training":
         from .training_data import export_round
 

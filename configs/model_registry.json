@@ -12,17 +12,27 @@
       "configuration": "legacy/indoor/pipelines/appearance20/config.json"
     },
     "outdoor_tracking": {
+      "version": "11_id_only_final",
+      "selection_basis": "existing_validated_id_only_release",
+      "entrypoint": "legacy/outdoor/final_id_only/run_final.py",
+      "configuration": "legacy/outdoor/final_id_only/config.json",
+      "geometry_postprocess": "legacy/outdoor/final_id_only/postprocess_all_pose_boxes_tuned.py",
+      "scope": "先沿用选定检测/姿态，双向关联与轨迹片段拼接后仅回写蜂体ID"
+    }
+  },
+  "integration_candidate": {
+    "version": "flywheel_0.4.0",
+    "evaluation_status": "runtime_validation_only",
+    "full_training_complete": false,
+    "promoted_over_selected": false,
+    "metrics": null
+  },
+  "research_alternatives": {
+    "outdoor_sam21": {
       "selection_basis": "requested_upstream_original",
       "upstream_commit": "6d507c0b12709618e0760aaec020b49686dd7247",
       "entrypoint": "legacy/outdoor/sam2_bee_tracker.py",
       "postprocess": "legacy/outdoor/apply_postprocess_snapping.py"
     }
-  },
-  "integration_candidate": {
-    "version": "flywheel_0.2.0",
-    "evaluation_status": "runtime_validation_only",
-    "full_training_complete": false,
-    "promoted_over_selected": false,
-    "metrics": null
   }
 }

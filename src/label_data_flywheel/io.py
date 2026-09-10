@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
+from .semantics import entity_rules
 
 
 def read_json(path):
@@ -38,11 +39,13 @@ def sha256(path):
 
 
 def normalize(
-    frame, *, video, domain, group="unknown", split="unassigned", source="prediction"
+    frame, *, video=None, domain=None, group="unknown", split="unassigned", source="prediction"
 ):
     f = copy.deepcopy(frame)
     # 已标准化记录的域与其 sample_id 一致，不被调用参数静默改写。
     domain = f.get("domain", domain)
+    if not f.get("video", video):
+        raise ValueError("未标准化输入必须提供 video")
     if domain not in ("IR_in", "RGB_out"):
         raise ValueError("domain必须为IR_in或RGB_out")
     f.update(
@@ -68,8 +71,10 @@ def normalize(
     )
     f.setdefault("context_id", "default")
     f.setdefault("hive_id", "default")
-    for collection in ("detections", "temporarily_hidden_detections"):
-        for i, d in enumerate(f.setdefault(collection, [])):
+    for collection in ("detections", "temporarily_hidden_detections", "ignore_regions"):
+        for i, original in enumerate(f.setdefault(collection, [])):
+            d = entity_rules(original)
+            f[collection][i] = d
             if "bbox_xyxy" not in d:
                 d["bbox_xyxy"] = d["bbox"]
             d["bbox_xyxy"] = [float(x) for x in d["bbox_xyxy"]]
@@ -90,38 +95,45 @@ def normalize(
                 },
             )
             d.setdefault(
-                "label_status", "human" if source == "human" else "unconfirmed"
+                "label_status", "ignore" if collection == "ignore_regions" else
+                "human" if f["source_kind"] == "human" else "unconfirmed"
             )
-    ids = [d["track_id"] for d in f["detections"] if d.get("track_id") is not None]
+    ids = [d["track_id"] for d in f["detections"] if d.get("track_id") is not None
+           and d.get("label_status") != "invalid"]
     if len(ids) != len(set(ids)):
         raise ValueError(f"单帧ID重复：{f['sample_id']}")
     return f
 
 
 def labelme_frame(data, index):
-    entities = {}
+    points_by_group = {}
     for i, s in enumerate(data["shapes"]):
-        group = s.get("group_id")
-        key = group if group is not None else f"ungrouped-{i}"
-        d = entities.setdefault(key, {"track_id": group, "keypoints": {}})
-        points = s["points"]
-        if s["shape_type"] == "rectangle":
-            d["bbox_xyxy"] = [
-                min(p[0] for p in points),
-                min(p[1] for p in points),
-                max(p[0] for p in points),
-                max(p[1] for p in points),
-            ]
-        elif s["shape_type"] == "point":
+        if s["shape_type"] == "point" and s.get("group_id") is not None:
             name = {"tail": "abdomen_tip", "abdomen": "abdomen_tip"}.get(
                 s["label"], s["label"]
             )
-            d["keypoints"][name] = [*points[0], 1.0]
+            points_by_group.setdefault(s["group_id"], {})[name] = [*s["points"][0], 1.0]
+    entities = []
+    for i, s in enumerate(data["shapes"]):
+        if s["shape_type"] != "rectangle":
+            continue
+        if s["label"] not in ("bee", "bee_shadow"):
+            raise ValueError("未声明的标注类别：" + s["label"])
+        points, group = s["points"], s.get("group_id")
+        entities.append(entity_rules({
+            "class_id": 0 if s["label"] == "bee" else 1,
+            "class_name": s["label"], "track_id": group,
+            "keypoints": points_by_group.get(group, {}),
+            "source_shape_index": i,
+            "bbox_xyxy": [min(p[0] for p in points), min(p[1] for p in points),
+                          max(p[0] for p in points), max(p[1] for p in points)],
+        }))
     return {
         "frame": index,
         "width": data["imageWidth"],
         "height": data["imageHeight"],
-        "detections": [d for d in entities.values() if "bbox_xyxy" in d],
+        "annotation_complete": bool(data.get("flags", {}).get("annotation_complete", False)),
+        "detections": entities,
     }
 
 
@@ -168,6 +180,10 @@ def iter_frames(path, **kwargs):
                     yield normalize(json.loads(line), **kwargs)
     else:
         data = read_json(path)
+        if isinstance(data, dict) and "shapes" in data:
+            frame = int(re.search(r"(\d+)(?:\.json)(?:\.gz)?$", path.name).group(1))
+            yield normalize(labelme_frame(data, frame), **kwargs)
+            return
         if isinstance(data, dict) and isinstance(data.get("frames"), dict):
             for k, ds in sorted(data["frames"].items(), key=lambda kv: int(kv[0])):
                 meta = data.get("metadata", {})

@@ -4,6 +4,7 @@ from importlib.resources import files
 import json
 import math
 import copy
+from .knowledge import default_graph, rule_evidence
 
 
 def literature():
@@ -14,7 +15,7 @@ def literature():
     )
 
 
-def interpret_colony(report):
+def interpret_colony(report, knowledge_graph=None):
     """默认路径只使用视频指标；每个候选附上源帧、基线和可测条件。"""
     metric_names = {
         "mean_observed_count": "观测数量",
@@ -23,6 +24,7 @@ def interpret_colony(report):
         "density_cv": "空间密度不均匀程度",
     }
     findings, queue = [], []
+    graph = knowledge_graph or default_graph()
     for scope in report["scopes"]:
         key = (scope["domain"], scope["video"], scope["group"])
         changes = scope["temporal"]["change_candidates"]
@@ -52,6 +54,7 @@ def interpret_colony(report):
                 }
                 findings.append(finding)
                 accepted.append(finding)
+            knowledge = rule_evidence(graph, "colony_temporal_change", key[0], key[1])
             queue.append({
                 "sample_id": f"{key[0]}/{key[2]}/{key[1]}/{window['first_frame']:08d}",
                 "event_id": f"{key[0]}/{key[2]}/{key[1]}/colony/{window['first_frame']}-{window['last_frame']}",
@@ -59,7 +62,9 @@ def interpret_colony(report):
                 "source_frame_range": [window["first_frame"], window["last_frame"]],
                 "window_index": window["index"], "status": "unconfirmed",
                 "reason": "colony_temporal_change" if any(f["status"] == "visual_change" for f in accepted) else "colony_observability_check",
-                "review_priority": max(abs(f["robust_z"] or 0) for f in accepted),
+                **knowledge,
+                "review_priority": max(abs(f["robust_z"] or 0) for f in accepted)
+                * (0.5 + 0.5 * knowledge["knowledge_support"]) + knowledge["knowledge_gain"],
                 "events": candidates,
                 "visual_findings": accepted,
                 "review_instruction": "回看对应源帧，核对数量、运动和空间分布的变化，并检查重复框、漏检及身份连接。",

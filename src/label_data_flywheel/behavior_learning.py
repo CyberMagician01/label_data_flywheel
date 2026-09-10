@@ -19,28 +19,29 @@ FEATURES = (
 )
 
 
-def feature_vector(record):
-    values = [record.get(k) for k in FEATURES]
+def feature_vector(record, features=FEATURES):
+    values = [record.get(k) for k in features]
     # 缺失指示与数值分离，不把未观测速度当成静止。
     return [0.0 if x is None else float(x) for x in values] + [
         float(x is not None) for x in values
     ]
 
 
-def build_model():
+def build_model(states=None, features=FEATURES):
     from torch import nn
+    states = states or STATES
 
     class BehaviorModel(nn.Module):
         def __init__(self):
             super().__init__()
             self.shared = nn.Sequential(
-                nn.Linear(len(FEATURES) * 2, 32),
+                nn.Linear(len(features) * 2, 32),
                 nn.ReLU(),
                 nn.Linear(32, 32),
                 nn.ReLU(),
             )
             self.heads = nn.ModuleDict(
-                {k: nn.Linear(32, len(v)) for k, v in STATES.items()}
+                {k: nn.Linear(32, len(v)) for k, v in states.items()}
             )
 
         def forward(self, x):
@@ -50,9 +51,10 @@ def build_model():
     return BehaviorModel()
 
 
-def train(records, output, epochs=100, device="cpu", seed=3407):
+def train(records, output, epochs=100, device="cpu", seed=3407, states=None, features=FEATURES):
     import torch
     from torch.nn import functional as F
+    states = states or STATES
 
     if not records or any(
         r.get("status") != "human_confirmed" or r.get("split") != "train"
@@ -63,23 +65,23 @@ def train(records, output, epochs=100, device="cpu", seed=3407):
     if path.exists():
         raise FileExistsError("行为模型使用新版本路径")
     torch.manual_seed(seed)
-    raw = np.asarray([feature_vector(r) for r in records], np.float32)
+    raw = np.asarray([feature_vector(r, features) for r in records], np.float32)
     mean = raw.mean(0)
     std = np.maximum(raw.std(0), 1e-3)
     x = torch.tensor((raw - mean) / std, device=device)
     labels = {
         k: torch.tensor(
             [
-                STATES[k].index(r["labels"][k]) if k in r.get("labels", {}) else -1
+                states[k].index(r["labels"][k]) if k in r.get("labels", {}) else -1
                 for r in records
             ],
             device=device,
         )
-        for k in STATES
+        for k in states
     }
     if not any((v >= 0).any() for v in labels.values()):
         raise ValueError("没有可用行为监督")
-    model = build_model().to(device)
+    model = build_model(states, features).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
     history = []
     for _ in range(epochs):
@@ -99,8 +101,8 @@ def train(records, output, epochs=100, device="cpu", seed=3407):
             "model": model.state_dict(),
             "feature_mean": mean.tolist(),
             "feature_std": std.tolist(),
-            "states": STATES,
-            "features": FEATURES,
+            "states": states,
+            "features": features,
             "training_samples": len(records),
             "optimizer": optimizer.state_dict(),
         },
@@ -119,10 +121,11 @@ def predict(records, checkpoint, device="cpu"):
     import torch
 
     state = torch.load(checkpoint, map_location=device, weights_only=True)
-    model = build_model().to(device)
+    states, features = state["states"], state["features"]
+    model = build_model(states, features).to(device)
     model.load_state_dict(state["model"])
     model.eval()
-    raw = np.asarray([feature_vector(r) for r in records], np.float32)
+    raw = np.asarray([feature_vector(r, features) for r in records], np.float32)
     x = torch.tensor(
         (raw - state["feature_mean"]) / np.asarray(state["feature_std"]),
         dtype=torch.float32,
@@ -134,10 +137,20 @@ def predict(records, checkpoint, device="cpu"):
         {
             **r,
             "predicted_states": {
-                k: STATES[k][int(p[i].argmax())] for k, p in prob.items()
+                k: states[k][int(p[i].argmax())] for k, p in prob.items()
             },
             "state_probabilities": {k: p[i].tolist() for k, p in prob.items()},
             "status": "candidate",
         }
         for i, r in enumerate(records)
     ]
+
+
+def train_colony(records, output, epochs=100, device="cpu"):
+    from .behavior_supervision import COLONY_FEATURES
+    if any(r.get("supervision_unit") != "group_window" for r in records):
+        raise ValueError("群体训练只接受群体窗口监督")
+    labels = sorted({r["labels"]["colony"] for r in records})
+    if len(labels) < 2:
+        raise ValueError("群体分类至少需要两类已确认训练窗口")
+    return train(records, output, epochs, device, states={"colony": labels}, features=COLONY_FEATURES)

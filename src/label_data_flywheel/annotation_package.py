@@ -12,6 +12,7 @@ import tempfile
 
 from .io import iter_frames, read_json, write_json, sha256
 from .postprocess import is_fill
+from .semantics import is_bee
 
 KEYPOINTS = ["head", "abdomen_tip"]
 SPLITS = {"train", "val", "calibration", "test", "unassigned"}
@@ -277,6 +278,7 @@ def _export(config, root):
                         status = d.get("label_status", "unconfirmed")
                         excluded = (
                             collection != "detections"
+                            or not is_bee(d)
                             or status in ("invalid", "ignore")
                             or f.get("status") in ("invalid", "suspect")
                         )

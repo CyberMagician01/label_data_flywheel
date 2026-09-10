@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,7 @@ def main():
     ap.add_argument("--split-contract")
     ap.add_argument("--checkpoint")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--execute", action="store_true", help="配置校验后在当前模型环境执行训练")
     args = ap.parse_args()
     snapshot = read_json(Path(args.snapshot) / "snapshot.json")
     config = load_config(args.base_config)
@@ -32,7 +34,8 @@ def main():
         ("train", "train_dataloader"),
         ("calibration", "val_dataloader"),
     ]:
-        source = snapshot["splits"][role]
+        source = dict(snapshot["splits"][role])
+        source["path"] = str(Path(source["path"]).resolve())
         document = read_json(source["path"])
         CocoDetection.validate_schema_dict(document, 2)
         dataset = config[name]["dataset"]
@@ -60,7 +63,7 @@ def main():
             "sha256": sha256(args.sampling_plan),
             "applied_via": "COCO images[].sampling_weight",
         }
-    output = Path(args.output)
+    output = Path(args.output).resolve()
     if output.exists():
         raise FileExistsError("配置输出已存在")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -75,16 +78,19 @@ def main():
         str(output),
     ]
     if args.checkpoint:
-        command.extend(["--resume" if args.resume else "--tuning", args.checkpoint])
-    write_json(
-        output.with_suffix(".launch.json"),
-        {
+        command.extend(["--resume" if args.resume else "--tuning", str(Path(args.checkpoint).resolve())])
+    launch = {
             "argv": command,
             "snapshot_sha256": sha256(Path(args.snapshot) / "snapshot.json"),
             "executed": False,
             "checkpoint_lineage_preserved": bool(args.resume),
-        },
-    )
+        }
+    write_json(output.with_suffix(".launch.json"), launch)
+    if args.execute:
+        result = subprocess.run(command, cwd=ROOT / "legacy/route_e/ecdetseg")
+        launch.update(executed=True, returncode=result.returncode)
+        write_json(output.with_suffix(".launch.json"), launch)
+        result.check_returncode()
     print(json.dumps({"config": str(output), "argv": command}, ensure_ascii=False))
 
 

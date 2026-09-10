@@ -64,13 +64,14 @@ def _transform_target(target, scale, left, top, canvas_size, track_id_offset=0):
         result['boxes'] = convert_to_tv_tensor(
             boxes, key='boxes', box_format='XYXY', spatial_size=canvas_size,
         )
-    if 'ignore_boxes' in result:
-        ignore_boxes = _tensor(result['ignore_boxes']).clone() * scale
-        ignore_boxes[:, 0::2] += left
-        ignore_boxes[:, 1::2] += top
-        result['ignore_boxes'] = convert_to_tv_tensor(
-            ignore_boxes, key='boxes', box_format='XYXY', spatial_size=canvas_size,
-        )
+    for region_name in ('ignore_boxes', 'verified_background_boxes'):
+        if region_name in result:
+            ignore_boxes = _tensor(result[region_name]).clone() * scale
+            ignore_boxes[:, 0::2] += left
+            ignore_boxes[:, 1::2] += top
+            result[region_name] = convert_to_tv_tensor(
+                ignore_boxes, key='boxes', box_format='XYXY', spatial_size=canvas_size,
+            )
     if 'keypoints' in result:
         keypoints = result['keypoints'].clone().to(torch.float32)
         keypoints[..., :2] *= scale
@@ -101,7 +102,7 @@ def _transform_target(target, scale, left, top, canvas_size, track_id_offset=0):
 def _merge_instance_targets(primary, secondary, canvas_size):
     result = {
         key: value for key, value in primary.items()
-        if key not in _INSTANCE_FIELDS and key != 'ignore_boxes'
+        if key not in _INSTANCE_FIELDS and key not in ('ignore_boxes', 'verified_background_boxes')
     }
     primary_count = len(primary.get('boxes', ()))
     secondary_count = len(secondary.get('boxes', ()))
@@ -121,15 +122,17 @@ def _merge_instance_targets(primary, secondary, canvas_size):
         result['boxes'] = convert_to_tv_tensor(
             result['boxes'], key='boxes', box_format='XYXY', spatial_size=canvas_size,
         )
-    ignore_parts = [
-        _tensor(target['ignore_boxes']) for target in (primary, secondary)
-        if 'ignore_boxes' in target and len(target['ignore_boxes'])
-    ]
-    if ignore_parts:
-        result['ignore_boxes'] = convert_to_tv_tensor(
-            torch.cat(ignore_parts, dim=0), key='boxes', box_format='XYXY',
-            spatial_size=canvas_size,
-        )
+    for region in ('ignore_boxes', 'verified_background_boxes'):
+        parts = [_tensor(target[region]) for target in (primary, secondary)
+                 if region in target and len(target[region])]
+        if parts:
+            result[region] = convert_to_tv_tensor(
+                torch.cat(parts, dim=0), key='boxes', box_format='XYXY', spatial_size=canvas_size,
+            )
+    result['annotation_complete'] = torch.tensor([
+        bool(primary.get('annotation_complete', True))
+        and bool(secondary.get('annotation_complete', True))
+    ])
     result['stitched_image_ids'] = torch.tensor(
         [_image_id(primary), _image_id(secondary)], dtype=torch.int64,
     )
@@ -144,8 +147,9 @@ def _rotate_target(image, target, angle, fill):
     result = _clone_target(target)
     if 'boxes' in result:
         result['boxes'] = F.rotate(result['boxes'], angle)
-    if 'ignore_boxes' in result:
-        result['ignore_boxes'] = F.rotate(result['ignore_boxes'], angle)
+    for region_name in ('ignore_boxes', 'verified_background_boxes'):
+        if region_name in result:
+            result[region_name] = F.rotate(result[region_name], angle)
     if 'masks' in result:
         result['masks'] = F.rotate(result['masks'], angle, fill=0)
     radians = math.radians(angle)
@@ -207,15 +211,16 @@ def _crop_target(image, target, top, left, crop_height, crop_width,
         result['masks'] = F.crop(
             result['masks'], top, left, crop_height, crop_width,
         )
-    if 'ignore_boxes' in result:
-        boxes = _tensor(result['ignore_boxes']).clone()
-        boxes[:, 0::2] = (boxes[:, 0::2] - left).clamp(0, crop_width)
-        boxes[:, 1::2] = (boxes[:, 1::2] - top).clamp(0, crop_height)
-        valid = (boxes[:, 2] > boxes[:, 0]) & (boxes[:, 3] > boxes[:, 1])
-        result['ignore_boxes'] = convert_to_tv_tensor(
-            boxes[valid], key='boxes', box_format='XYXY',
-            spatial_size=(crop_height, crop_width),
-        )
+    for region_name in ('ignore_boxes', 'verified_background_boxes'):
+        if region_name in result:
+            boxes = _tensor(result[region_name]).clone()
+            boxes[:, 0::2] = (boxes[:, 0::2] - left).clamp(0, crop_width)
+            boxes[:, 1::2] = (boxes[:, 1::2] - top).clamp(0, crop_height)
+            valid = (boxes[:, 2] > boxes[:, 0]) & (boxes[:, 3] > boxes[:, 1])
+            result[region_name] = convert_to_tv_tensor(
+                boxes[valid], key='boxes', box_format='XYXY',
+                spatial_size=(crop_height, crop_width),
+            )
     if 'btca_tubes' in result:
         result['btca_tubes'] = _btca_transform_crop(
             result['btca_tubes'], top, left, crop_height, crop_width,

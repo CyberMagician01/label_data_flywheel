@@ -45,7 +45,8 @@ def test_full_geometry_id_hidden_and_originals(tmp_path):
     assert list(map(float, lines[0].split())) == [0, 0.1, 0.3, 0.2, 0.4]
     with gzip.open(out / "frame_ids.jsonl.gz", "rt") as h:
         meta = json.loads(next(h))
-    assert [r["track_id"] for r in meta["rows"]["candidates"]] == [743, 900]
+    assert [r["track_id"] for r in meta["rows"]["candidates"]] == [743, None]
+    assert meta["rows"]["candidates"][1]["source_track_id"] == 900
     assert meta["rows"]["hidden"][0]["track_id"] == 253
     pose = (out / meta["label_files"]["candidates_pose"]).read_text().splitlines()
     assert list(map(float, pose[0].split()[5:])) == [0.1, 0.2, 2, 0.105, 0.3, 2]

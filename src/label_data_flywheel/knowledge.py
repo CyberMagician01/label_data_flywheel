@@ -12,6 +12,8 @@ def default_graph():
         ("directed_interaction", "O3"),
         ("axis_oscillation", "O3"),
         ("pose_topology", "O1"),
+        ("density_consistency", "O1"),
+        ("colony_temporal_change", "O3"),
     ]
     return {
         "nodes": [
@@ -47,6 +49,8 @@ def update_graph(graph, reviews):
     result = copy.deepcopy(graph)
     by_rule = defaultdict(list)
     for r in reviews:
+        if r.get("split") == "test":
+            raise ValueError("测试集判读不能更新训练知识")
         if not r.get("reviewer") or r.get("action") not in (
             "confirm",
             "reject",
@@ -59,7 +63,7 @@ def update_graph(graph, reviews):
         if not rows:
             continue
         used = set(node.get("review_ids", []))
-        fresh = [r for r in rows if r["review_id"] not in used]
+        fresh = list({r["review_id"]: r for r in rows if r["review_id"] not in used}.values())
         node["alpha"] += sum(r["action"] == "confirm" for r in fresh)
         node["beta"] += sum(r["action"] != "confirm" for r in fresh)
         node["review_ids"] = sorted(used | {r["review_id"] for r in fresh})
@@ -78,6 +82,32 @@ def update_graph(graph, reviews):
         node["downstream_gains"] = [*node.get("downstream_gains", []), *gains]
         node["validation_status"] = "human_reviewed"
     return result
+
+
+def rule_evidence(graph, knowledge_id, domain=None, video=None):
+    """规则支持度决定解释强度；一次复核的预期方差缩减衡量知识获取价值。"""
+    node = next((n for n in graph["nodes"] if n["id"] == knowledge_id), None)
+    if node is None or (domain and domain not in node.get("domains", [domain])):
+        return {"knowledge_id": knowledge_id, "knowledge_support": 0.5, "knowledge_gain": 1.0}
+    a, b = float(node["alpha"]), float(node["beta"])
+    total = a + b
+    gain = 36 * a * b / (total * total * (total + 1) ** 2)
+    if video and video not in node.get("validated_videos", []):
+        gain *= 1.25
+    return {"knowledge_id": knowledge_id, "knowledge_support": a / total,
+            "knowledge_gain": float(min(gain, 1.0))}
+
+
+def apply_behavior_knowledge(report, graph):
+    out = copy.deepcopy(report)
+    for event in out.get("events", []):
+        evidence = rule_evidence(graph, event["knowledge_source"], event["domain"], event["video"])
+        event.update(evidence)
+        visual = event.get("evidence_confidence")
+        event["visual_evidence_confidence"] = visual
+        if visual is not None:
+            event["evidence_confidence"] = visual * evidence["knowledge_support"]
+    return out
 
 
 def attach_context(report, context=None):

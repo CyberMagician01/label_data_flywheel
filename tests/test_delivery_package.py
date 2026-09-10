@@ -48,4 +48,8 @@ def test_delivery_layout_and_empty_splits(tmp_path):
     assert len(pose) == 11 and list(map(float, pose[5:])) == [0] * 6
     assert ",743," in (root / "annotations_tracking/B-5-1/tracks.txt").read_text()
     assert not (root / "splits/train.txt").read_text()
-    assert (root / "splits/unassigned.txt").read_text() == "B-5-1/frame_00000000.jpg\n"
+    extra = root.with_name(root.name + "_附加信息")
+    assert (extra / "unassigned.txt").read_text() == "B-5-1/frame_00000000.jpg\n"
+    assert set(p.name for p in (root / "splits").iterdir()) == {"train.txt", "val.txt"}
+    assert not (root / "metadata").exists()
+    assert not (root / "annotations_tracking/B-5-1/seqinfo.ini").exists()

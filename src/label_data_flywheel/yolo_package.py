@@ -12,6 +12,7 @@ from pathlib import Path
 from .annotation_package import CONFIRMED, SPLITS, _geometry, _part
 from .io import read_json, write_json
 from .postprocess import is_fill
+from .semantics import entity_rules
 
 
 def source_records(spec):
@@ -86,11 +87,11 @@ def labelme_records(data, names):
                 "difficult": shape.get("difficult", False),
             }
         )
-    return result
+    return [entity_rules(d) for d in result]
 
 
 def yolo_row(detection, width, height, names, encoding="confidence"):
-    d = detection
+    d = entity_rules(detection)
     if encoding == "coco_visibility":
         d = dict(
             d,
@@ -188,7 +189,7 @@ def export_yolo(config, destination):
                         "ignore_regions",
                     ):
                         for i, original in enumerate(f.get(collection, [])):
-                            d = dict(original)
+                            d = entity_rules(original)
                             d.setdefault("bbox_xyxy", d.get("bbox"))
                             status = d.get(
                                 "label_status",
@@ -245,6 +246,7 @@ def export_yolo(config, destination):
                                     "source_shape_index": d.get("source_shape_index"),
                                     "track_id": d.get("track_id"),
                                     "source_track_id": d.get("source_track_id"),
+                                    "source_keypoints": d.get("source_keypoints"),
                                     "class_id": d.get("class_id", 0),
                                     "origin": d.get("origin", "observed"),
                                     "confidence": d.get(

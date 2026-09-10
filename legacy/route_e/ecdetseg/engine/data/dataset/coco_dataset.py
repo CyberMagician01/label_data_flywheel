@@ -89,8 +89,9 @@ class CocoDetection(torchvision.datasets.CocoDetection, DetDataset):
             ))
             destination = self.unlabelled_indices if is_unlabelled else self.labelled_indices
             destination[domain_id].append(index)
-            is_hard_negative = bool(image_info.get('hard_negative', False)) or (
-                domain_id == 1 and len(self.coco.imgToAnns.get(image_id, [])) == 0
+            is_hard_negative = bool(image_info.get('annotation_complete', not is_unlabelled)) and (
+                bool(image_info.get('hard_negative', False))
+                or (domain_id == 1 and len(self.coco.imgToAnns.get(image_id, [])) == 0)
             )
             if is_hard_negative:
                 self.hard_negative_indices[domain_id].append(index)
@@ -275,8 +276,10 @@ class CocoDetection(torchvision.datasets.CocoDetection, DetDataset):
         domain_id = self._domain_id(image_info)
         sensor_name = str(image_info.get('sensor_id', image_info.get('camera_id', 'unknown')))
         sequence_name = str(image_info.get('sequence_id', image_info.get('video_id', 'unknown')))
-        is_hard_negative = bool(image_info.get('hard_negative', False)) or (
-            domain_id == 1 and len(target['boxes']) == 0
+        is_hard_negative = bool(image_info.get('annotation_complete', not image_info.get(
+            'is_unlabeled', image_info.get('unlabeled', False)))) and (
+            bool(image_info.get('hard_negative', False))
+            or (domain_id == 1 and len(target['boxes']) == 0)
         )
         target['domain_id'] = torch.tensor([domain_id], dtype=torch.int64)
         target['scene_id'] = torch.tensor([
@@ -295,6 +298,15 @@ class CocoDetection(torchvision.datasets.CocoDetection, DetDataset):
             bool(image_info.get('track_supervised', False))
         ], dtype=torch.bool)
         target['schema_version'] = torch.tensor([self.schema_version], dtype=torch.int64)
+        target['annotation_complete'] = torch.tensor([
+            bool(image_info.get('annotation_complete', not bool(target['is_unlabeled'])))
+        ], dtype=torch.bool)
+        if image_info.get('verified_background_boxes'):
+            negative = torch.as_tensor(image_info['verified_background_boxes'], dtype=torch.float32).reshape(-1, 4)
+            negative[:, 2:] += negative[:, :2]
+            target['verified_background_boxes'] = convert_to_tv_tensor(
+                negative, key='boxes', spatial_size=image.size[::-1], box_format='XYXY',
+            )
 
         ignore_xywh = list(image_info.get('ignore_boxes', [])) + [
             annotation['bbox'] for annotation in ignored_annotations
