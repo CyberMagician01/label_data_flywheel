@@ -11,7 +11,7 @@ dependencies = ["numpy>=1.23,<3", "Pillow>=9", "ijson>=3.2"]
 
 [project.optional-dependencies]
 vision = ["opencv-python>=4.8", "scipy>=1.10", "requests>=2.28"]
-training = ["torch>=2.1", "PyYAML>=6"]
+training = ["torch>=2.1", "torchvision>=0.16", "PyYAML>=6"]
 test = ["pytest>=7"]
 colony = ["scipy>=1.10", "matplotlib>=3.7"]
 evaluation = ["trackeval @ git+https://github.com/JonathonLuiten/TrackEval.git@12c8791b303e0a0b50f753af204249e622d0281a", "scipy>=1.10"]
